@@ -6,6 +6,9 @@
 
 import QtQuick
 import QtQuick.Controls
+import QtMultimedia
+
+import Kek
 
 ApplicationWindow {
 	width: 2560
@@ -18,11 +21,26 @@ ApplicationWindow {
 		showFullScreen();
 	}
 
-	Rectangle {
+	Video {
+		id: video
+		width: 3072
+		height: 3072
 		anchors.centerIn: parent
-		width: 2560
-		height: 1440
-		color: "White"
+
+		source: Qt.resolvedUrl("./graphics/pulse.mp4")
+		autoPlay: true
+
+		onErrorStringChanged: {
+			print(video.errorString)
+		}
+		opacity: 0
+
+		SequentialAnimation {
+			running: video.playbackState == MediaPlayer.PlayingState
+			NumberAnimation { target: video; property: "opacity"; to: 1; duration: 500 }
+			NumberAnimation { target: video; property: "opacity"; to: 1; duration: 633 }
+			NumberAnimation { target: video; property: "opacity"; to: 0; duration: 500 }
+		}
 	}
 
 	//The distance from the centre of each hexagon to each vertex is 250.
