@@ -25,7 +25,7 @@ if __name__ == "__main__":
 	console_handler = logging.StreamHandler()
 	logging.basicConfig(
 		level=logging.INFO,
-		format="%(levelname)s:$(asctime)s | %(message)s",
+		format="%(levelname)s:%(asctime)s | %(message)s",
 		handlers=[file_handler, console_handler]
 	)
 
