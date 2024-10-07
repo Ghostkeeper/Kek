@@ -17,4 +17,210 @@ ApplicationWindow {
 	Component.onCompleted: {
 		showFullScreen();
 	}
+
+	Rectangle {
+		anchors.centerIn: parent
+		width: 2560
+		height: 1440
+		color: "White"
+	}
+
+	//The distance from the centre of each hexagon to each vertex is 250.
+	//This makes the smallest radius of the hexagon 250*cos(30).
+	//We create 30px spacing between the hexagons.
+
+	Image {
+		id: centre_hex
+		anchors.centerIn: parent
+
+		source: "graphics/hexagon.svg"
+	}
+
+	//Circle of 6 hexagons surrounding the centre.
+	Image {
+		x: parent.width / 2 + 400.981 - width / 2 //cos(30) * (cos(30)*250*2 + 30) = 400.981
+		y: parent.height / 2 + 231.506 - height / 2 //sin(30) * (cos(30)*250*2 + 30) = 231.506
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - width / 2
+		y: parent.height / 2 + 463.013 - height / 2 //cos(30)*250*2 + 30 = 463.013
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 400.981 - width / 2
+		y: parent.height / 2 + 231.506 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 400.981 - width / 2
+		y: parent.height / 2 - 231.506 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - width / 2
+		y: parent.height / 2 - 463.013 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 400.981 - width / 2
+		y: parent.height / 2 - 231.506 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+
+	//Circle of 12 hexagons in the second ring.
+	Image {
+		x: parent.width / 2 + 801.962 - width / 2 //cos(30) * (cos(30)*250*2 + 30) * 2 = 801.962
+		y: parent.height / 2 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 801.962 - width / 2 //cos(30) * (cos(30)*250*2 + 30) * 2 = 801.962
+		y: parent.height / 2 + 463.013 - height / 2 //sin(30) * (cos(30)*250*2 + 30) * 2 = 463.013
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 400.981 - width / 2
+		y: parent.height / 2 + 694.519 - height / 2 //sin(30) * (cos(30)*250*2 + 30) + cos(30)*250*2+30 = 694.519
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - width / 2
+		y: parent.height / 2 + 926.025 - height / 2 //cos(30)*250*4 + 30*2 = 926.025
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 400.981 - width / 2
+		y: parent.height / 2 + 694.519 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 801.962 - width / 2
+		y: parent.height / 2 + 463.013 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 801.962 - width / 2
+		y: parent.height / 2 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 801.962 - width / 2
+		y: parent.height / 2 - 463.013 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 400.981 - width / 2
+		y: parent.height / 2 - 694.519 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - width / 2
+		y: parent.height / 2 - 926.025 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 400.981 - width / 2
+		y: parent.height / 2 - 694.519 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 801.962 - width / 2
+		y: parent.height / 2 - 463.013 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+
+	//Far right side.
+	Image {
+		x: parent.width / 2 + 801.962 - width / 2
+		y: parent.height / 2 - 926.025 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 1202.942 - width / 2 //cos(30) * (cos(30)*250*2 + 30) * 3 = 1202.942
+		y: parent.height / 2 - 694.519 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 1202.942 - width / 2
+		y: parent.height / 2 - 231.506 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 1202.942 - width / 2
+		y: parent.height / 2 + 231.506 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 1202.942 - width / 2
+		y: parent.height / 2 + 694.519 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 + 801.962 - width / 2
+		y: parent.height / 2 + 926.025 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+
+	//Far left side.
+	Image {
+		x: parent.width / 2 - 801.962 - width / 2
+		y: parent.height / 2 + 926.025 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 1202.942 - width / 2
+		y: parent.height / 2 + 694.519 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 1202.942 - width / 2
+		y: parent.height / 2 + 231.506 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 1202.942 - width / 2
+		y: parent.height / 2 - 231.506 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 1202.942 - width / 2
+		y: parent.height / 2 - 694.519 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
+	Image {
+		x: parent.width / 2 - 801.962 - width / 2
+		y: parent.height / 2 - 926.025 - height / 2
+
+		source: "graphics/hexagon.svg"
+	}
 }
