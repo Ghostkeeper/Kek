@@ -40,7 +40,7 @@ class Application(PySide6.QtWidgets.QApplication):
 		self.setOrganizationName("Ghostkeeper")
 
 		logging.debug("Registering QML types.")
-		PySide6.QtQml.qmlRegisterSingletonInstance(Application, "Lyn", 1, 0, "Application", self)
+		PySide6.QtQml.qmlRegisterSingletonInstance(Application, "Kek", 1, 0, "Application", self)
 
 		logging.debug("Loading QML engine.")
 		self.engine = PySide6.QtQml.QQmlApplicationEngine()
