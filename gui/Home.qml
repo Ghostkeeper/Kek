@@ -16,10 +16,10 @@ Item {
 		id: video
 		width: 3072
 		height: 3072
-		anchors.centerIn: parent
+
+		property var videoFinished: function() {}
 
 		source: Qt.resolvedUrl("./graphics/pulse.mp4")
-		autoPlay: true
 
 		onErrorStringChanged: {
 			print(video.errorString)
@@ -31,6 +31,7 @@ Item {
 			NumberAnimation { target: video; property: "opacity"; to: 1; duration: 500 }
 			NumberAnimation { target: video; property: "opacity"; to: 1; duration: 633 }
 			NumberAnimation { target: video; property: "opacity"; to: 0; duration: 500 }
+			onStopped: video.videoFinished()
 		}
 	}
 
@@ -51,7 +52,14 @@ Item {
 		y: parent.height / 2 + 231.506 - height / 2 //sin(30) * (cos(30)*250*2 + 30) = 231.506
 
 		source: "graphics/tile_music.svg"
-		onClicked: pageSwapper.source = "Music.qml"
+		onClicked: {
+			video.x = x + width / 2 - video.width / 2;
+			video.y = y + height / 2 - video.height / 2;
+			video.videoFinished = function() {
+				pageSwapper.source = "Music.qml"
+			};
+			video.play();
+		}
 	}
 	Image {
 		x: parent.width / 2 - width / 2
