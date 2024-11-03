@@ -6,7 +6,6 @@
 
 import QtQuick
 import QtQuick.Controls
-import Kek
 import "." as Gui
 
 ApplicationWindow {

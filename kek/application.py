@@ -13,6 +13,8 @@ import PySide6.QtQml  # To register types with the QML engine, and create the en
 import PySide6.QtWidgets  # This is an application.
 import typing
 
+import kek.music_directory
+
 
 class Application(PySide6.QtWidgets.QApplication):
 	"""
@@ -41,6 +43,7 @@ class Application(PySide6.QtWidgets.QApplication):
 
 		logging.debug("Registering QML types.")
 		PySide6.QtQml.qmlRegisterSingletonInstance(Application, "Kek", 1, 0, "Application", self)
+		PySide6.QtQml.qmlRegisterType(kek.music_directory.MusicDirectory, "Kek", 1, 0, "MusicDirectory")
 
 		logging.debug("Loading QML engine.")
 		self.engine = PySide6.QtQml.QQmlApplicationEngine()

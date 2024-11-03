@@ -6,12 +6,29 @@
 
 import QtQuick
 import QtQuick.Controls
+import Kek 1.0 as Kek
 
 Item {
 	anchors.fill: parent
-	Rectangle {
-		color: "red"
-		width: 100
-		height: 100
+
+	TableView {
+		id: files_table
+		anchors {
+			top: parent.top
+			bottom: parent.bottom
+			left: parent.left
+			right: parent.horizontalCenter
+		}
+
+		flickableDirection: Flickable.VerticalFlick
+		clip: true
+		model: Kek.MusicDirectory { }
+		delegate: Rectangle {
+			color: "grey"
+			border.width: 2
+			border.color: "red"
+			width: 30
+			height: 30
+		}
 	}
 }
