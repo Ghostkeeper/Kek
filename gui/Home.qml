@@ -52,6 +52,7 @@ Item {
 		y: parent.height / 2 + 231.506 - height / 2 //sin(30) * (cos(30)*250*2 + 30) = 231.506
 
 		source: "graphics/tile_music.svg"
+		onClicked: pageSwapper.source = "Music.qml"
 	}
 	Image {
 		x: parent.width / 2 - width / 2

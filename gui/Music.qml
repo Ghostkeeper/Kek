@@ -7,23 +7,11 @@
 import QtQuick
 import QtQuick.Controls
 
-import Kek
-import "." as Gui
-
-ApplicationWindow {
-	width: 2560
-	height: 1440
-	title: "Kek"
-
-	color: "Black"
-
-	Component.onCompleted: {
-		showFullScreen();
-	}
-
-	Loader {
-		id: pageSwapper
-		anchors.fill: parent
-		source: "Home.qml"
+Item {
+	anchors.fill: parent
+	Rectangle {
+		color: "red"
+		width: 100
+		height: 100
 	}
 }
