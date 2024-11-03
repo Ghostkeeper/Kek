@@ -7,7 +7,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtMultimedia
-
 import "." as Gui
 
 Item {

@@ -6,7 +6,6 @@
 
 import QtQuick
 import QtQuick.Controls
-
 import Kek
 import "." as Gui
 
@@ -25,5 +24,16 @@ ApplicationWindow {
 		id: pageSwapper
 		anchors.fill: parent
 		source: "Home.qml"
+	}
+
+	Gui.Button {
+		anchors {
+			bottom: parent.bottom
+			right: parent.right
+		}
+
+		visible: pageSwapper.source != "Home.qml"
+		source: "graphics/home.svg"
+		onClicked: pageSwapper.source = "Home.qml"
 	}
 }
