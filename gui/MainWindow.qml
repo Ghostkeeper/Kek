@@ -9,6 +9,7 @@ import QtQuick.Controls
 import QtMultimedia
 
 import Kek
+import "." as Gui
 
 ApplicationWindow {
 	width: 2560
@@ -55,11 +56,11 @@ ApplicationWindow {
 	}
 
 	//Circle of 6 hexagons surrounding the centre.
-	Image {
+	Gui.Button {
 		x: parent.width / 2 + 400.981 - width / 2 //cos(30) * (cos(30)*250*2 + 30) = 400.981
 		y: parent.height / 2 + 231.506 - height / 2 //sin(30) * (cos(30)*250*2 + 30) = 231.506
 
-		source: "graphics/hexagon.svg"
+		source: "graphics/tile_music.svg"
 	}
 	Image {
 		x: parent.width / 2 - width / 2
