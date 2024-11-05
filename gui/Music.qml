@@ -22,13 +22,41 @@ Item {
 
 		flickableDirection: Flickable.VerticalFlick
 		clip: true
-		model: Kek.MusicDirectory { }
-		delegate: Rectangle {
-			color: "grey"
-			border.width: 2
-			border.color: "red"
-			width: 30
-			height: 30
+		model: Kek.MusicDirectory {
+			id: music_directory
+		}
+		delegate: Item {
+			implicitWidth: {
+				const field = music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole);
+				if(field === "type") return 50;
+				if(field === "name") return files_table.width - 200;
+				return 150; //Duration.
+			}
+			implicitHeight: 50
+
+			Text {
+				anchors.fill: parent
+				visible: music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole) !== "type"
+
+				text: display
+				elide: Text.ElideRight
+				color: "white"
+				font.pointSize: 35
+			}
+
+			Image {
+				width: 50
+				height: 50
+
+				visible: music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole) === "type"
+				source: {
+					//TODO: Make icons.
+					if(display === "directory") return "graphics/home.svg";
+					if(display === "uncompressed") return "graphics/home.svg";
+					if(display === "compressed") return "graphics/home.svg";
+					return "";
+				}
+			}
 		}
 	}
 }

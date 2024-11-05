@@ -27,7 +27,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		"""
 		super().__init__(parent)
 
-		self.column_fields = ["type", "title", "duration"]
+		self.column_fields = ["type", "name", "duration"]
 		self.music: list[dict[str, typing.Any]] = []  # The actual data contained in this table.
 
 		music_locations = PySide6.QtCore.QStandardPaths.standardLocations(PySide6.QtCore.QStandardPaths.StandardLocation.MusicLocation)
