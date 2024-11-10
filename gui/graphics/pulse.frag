@@ -8,10 +8,8 @@ layout(std140, binding=0) uniform buf {
 
 	float time;
 	float radius;
-	float cx;
-	float cy;
-	float tex_width;
-	float tex_height;
+	vec2 centre;
+	vec2 size;
 } ubuf;
 
 vec3 hsb2rgb(in vec3 c)
@@ -23,7 +21,7 @@ vec3 hsb2rgb(in vec3 c)
 
 void main()
 {
-	vec2 p = (qt_TexCoord0 * vec2(ubuf.tex_width, ubuf.tex_height) - vec2(ubuf.cx, ubuf.cy)) / ubuf.radius;
+	vec2 p = (qt_TexCoord0 * ubuf.size - ubuf.centre) / ubuf.radius;
 
 	float r = length(p) * 0.9;
 	vec3 color = hsb2rgb(vec3(0.24, 0.7, 0.4));

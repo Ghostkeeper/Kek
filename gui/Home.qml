@@ -17,10 +17,8 @@ Item {
 		anchors.fill: parent
 
 		property var animationFinished: function() {}
-		property real cx: width / 2
-		property real cy: height / 2
-		property real tex_width: width
-		property real tex_height: height
+		property point centre: Qt.point(width / 2, height / 2)
+		property point size: Qt.point(width, height)
 		property real radius: height
 
 		fragmentShader: "graphics/pulse.frag.qsb"
@@ -56,8 +54,7 @@ Item {
 
 		source: "graphics/tile_music.svg"
 		onClicked: {
-			pulse.cx = x + width / 2;
-			pulse.cy = y + height / 2;
+			pulse.centre = Qt.point(x + width / 2, y + height / 2);
 			pulse.animationFinished = function() {
 				pageSwapper.source = "Music.qml"
 			};
