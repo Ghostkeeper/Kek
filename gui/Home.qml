@@ -12,26 +12,29 @@ import "." as Gui
 Item {
 	anchors.fill: parent
 
-	Video {
-		id: video
-		width: 3072
-		height: 3072
+	ShaderEffect {
+		id: pulse
+		anchors.fill: parent
 
-		property var videoFinished: function() {}
+		property var animationFinished: function() {}
+		property real cx: width / 2
+		property real cy: height / 2
+		property real tex_width: width
+		property real tex_height: height
+		property real radius: height
 
-		source: Qt.resolvedUrl("./graphics/pulse.mp4")
+		fragmentShader: "graphics/pulse.frag.qsb"
 
-		onErrorStringChanged: {
-			print(video.errorString)
-		}
-		opacity: 0
+		property real time: 0
+		NumberAnimation on time {
+			id: timeAnimation
 
-		SequentialAnimation {
-			running: video.playbackState == MediaPlayer.PlayingState
-			NumberAnimation { target: video; property: "opacity"; to: 1; duration: 500 }
-			NumberAnimation { target: video; property: "opacity"; to: 1; duration: 633 }
-			NumberAnimation { target: video; property: "opacity"; to: 0; duration: 500 }
-			onStopped: video.videoFinished()
+			from: 0
+			to: 1
+			duration: 2000
+			running: false
+			loops: 1
+			onFinished: pulse.animationFinished()
 		}
 	}
 
@@ -53,12 +56,12 @@ Item {
 
 		source: "graphics/tile_music.svg"
 		onClicked: {
-			video.x = x + width / 2 - video.width / 2;
-			video.y = y + height / 2 - video.height / 2;
-			video.videoFinished = function() {
+			pulse.cx = x + width / 2;
+			pulse.cy = y + height / 2;
+			pulse.animationFinished = function() {
 				pageSwapper.source = "Music.qml"
 			};
-			video.play();
+			timeAnimation.restart();
 		}
 	}
 	Image {
