@@ -31,7 +31,7 @@ Item {
 
 			from: 0
 			to: 1
-			duration: 2000
+			duration: 1000
 			running: false
 			loops: 1
 			onFinished: pulse.animationFinished()
