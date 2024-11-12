@@ -7,6 +7,7 @@
 import QtQuick
 import QtQuick.Controls
 import Kek 1.0 as Kek
+import "." as Gui
 
 Item {
 	anchors.fill: parent
@@ -58,5 +59,6 @@ Item {
 				}
 			}
 		}
+		ScrollBar.vertical: Gui.ScrollBar {}
 	}
 }
