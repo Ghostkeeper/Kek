@@ -37,7 +37,6 @@ Item {
 
 			onClicked: {
 				if(music_directory.entry_type(row) === "directory") {
-					print("Click the directory");
 					music_directory.directory = music_directory.headerData(row, Qt.Vertical, Qt.DisplayRole);
 				} else {
 					//TODO: Add to playlist.

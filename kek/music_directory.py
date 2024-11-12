@@ -130,7 +130,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		human_sort = lambda key: [convert_numbers(t) for t in re.split(r"([0-9.]+)", key)]
 		subdirectories = sorted(subdirectories, key=human_sort)
 		submusic = sorted(submusic, key=human_sort)
-		return list(itertools.chain(subdirectories, submusic))
+		return [".."] + list(itertools.chain(subdirectories, submusic))
 
 	def directory_set(self, new_directory: str) -> None:
 		"""
@@ -148,6 +148,14 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		new_music = []
 		for filepath in entries:
 			logging.debug(f"Listing directory entry: {filepath}")
+			if filepath == "..":
+				new_music.append({
+					"type": "directory",
+					"path": os.path.abspath(os.path.join(new_directory, "..")),
+					"name": "..",
+					"duration": -1,
+				})
+				continue
 			if os.path.isdir(filepath):
 				duration = -1
 				filetype = "directory"
