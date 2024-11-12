@@ -109,7 +109,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		if orientation == 1:  # PySide6.QtCore.Qt.Orientation.Horizontal is an enum, but the QML doesn't give us that.
 			return self.column_fields[section]
 		elif orientation == 2:
-			return self.music[section]["name"]
+			return self.music[section]["path"]
 		else:
 			return None
 
@@ -187,3 +187,14 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		:return: The current directory that this model is looking at.
 		"""
 		return self._directory
+
+	@PySide6.QtCore.Slot(int, result=str)
+	def entry_type(self, row: int) -> str:
+		"""
+		Get the type of entry that is in the directory at this spot.
+
+		This could be a subdirectory, a compressed file or an uncompressed file.
+		:param row: The row of this entry.
+		:return: The type of entry that is.
+		"""
+		return self.music[row]["type"]

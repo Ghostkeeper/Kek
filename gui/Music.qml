@@ -26,7 +26,7 @@ Item {
 		model: Kek.MusicDirectory {
 			id: music_directory
 		}
-		delegate: Item {
+		delegate: MouseArea {
 			implicitWidth: {
 				const field = music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole);
 				if(field === "type") return 50;
@@ -34,6 +34,15 @@ Item {
 				return 150; //Duration.
 			}
 			implicitHeight: 50
+
+			onClicked: {
+				if(music_directory.entry_type(row) === "directory") {
+					print("Click the directory");
+					music_directory.directory = music_directory.headerData(row, Qt.Vertical, Qt.DisplayRole);
+				} else {
+					//TODO: Add to playlist.
+				}
+			}
 
 			Text {
 				anchors.fill: parent
@@ -51,7 +60,6 @@ Item {
 
 				visible: music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole) === "type"
 				source: {
-					//TODO: Make icons.
 					if(display === "directory") return "graphics/home.svg";
 					if(display === "uncompressed") return "graphics/home.svg";
 					if(display === "compressed") return "graphics/home.svg";
