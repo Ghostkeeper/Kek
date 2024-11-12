@@ -8,11 +8,13 @@
 Defines a Qt model that lists the music files in a directory.
 """
 
+import itertools  # To sort directories.
 import logging
 import math  # To format track duration.
 import mutagen  # To read metadata from music files.
 import os.path  # To list files in the music directory.
 import PySide6.QtCore  # To expose this table to QML.
+import re  # To implement human sorting.
 import typing
 
 class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
@@ -111,6 +113,25 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		else:
 			return None
 
+	def sort_directory(self, entries: list[str]) -> list[str]:
+		"""
+		Sort the entries in a directory.
+
+		Subdirectories are put on top, supported files below. Both of these are then human-sorted.
+		:param entries: The items in the directory. Provide full file paths, please!
+		:return: Those same items, but reordered in correct sort order.
+		"""
+		subdirectories = filter(os.path.isdir, entries)
+		subfiles = filter(os.path.isfile, entries)
+		supported_extensions = [".mp3", ".flac", ".ogg", ".opus"]
+		submusic = filter(lambda x: os.path.splitext(x)[1] in supported_extensions, subfiles)
+
+		convert_numbers = lambda text: float(text) if text.replace(".", "", 1).isdigit() else text.lower()
+		human_sort = lambda key: [convert_numbers(t) for t in re.split(r"([0-9.]+)", key)]
+		subdirectories = sorted(subdirectories, key=human_sort)
+		submusic = sorted(submusic, key=human_sort)
+		return list(itertools.chain(subdirectories, submusic))
+
 	def directory_set(self, new_directory: str) -> None:
 		"""
 		Change the current directory that this model is looking at.
@@ -122,9 +143,10 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 			logging.warning(f"Trying to set music directory to non-existent path: {new_directory}")
 			return
 
+		entries = [os.path.join(new_directory, f) for f in os.listdir(new_directory)]
+		entries = self.sort_directory(entries)
 		new_music = []
-		for filename in os.listdir(new_directory):
-			filepath = os.path.join(new_directory, filename)
+		for filepath in entries:
 			logging.debug(f"Listing directory entry: {filepath}")
 			if os.path.isdir(filepath):
 				duration = -1
@@ -142,7 +164,8 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 					filetype = "compressed"
 			new_music.append({
 				"type": filetype,
-				"name": filename,
+				"path": filepath,
+				"name": os.path.basename(filepath),
 				"duration": duration,
 			})
 
