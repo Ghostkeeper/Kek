@@ -34,11 +34,11 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 
 		music_locations = PySide6.QtCore.QStandardPaths.standardLocations(PySide6.QtCore.QStandardPaths.StandardLocation.MusicLocation)
 		if music_locations:
-			directory = music_locations[0]
+			self.default_directory = music_locations[0]
 		else:
-			directory = os.path.expanduser("~/Music")
+			self.default_directory = os.path.expanduser("~/Music")
 		self._directory = ""
-		self.directory_set(directory)
+		self.directory_set(self.default_directory)
 
 
 	def rowCount(self, parent: typing.Optional[PySide6.QtCore.QModelIndex]=PySide6.QtCore.QModelIndex()) -> int:
@@ -149,12 +149,13 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		for filepath in entries:
 			logging.debug(f"Listing directory entry: {filepath}")
 			if filepath == "..":
-				new_music.append({
-					"type": "directory",
-					"path": os.path.abspath(os.path.join(new_directory, "..")),
-					"name": "..",
-					"duration": -1,
-				})
+				if new_directory != self.default_directory:  # Don't allow going above the default directory.
+					new_music.append({
+						"type": "directory",
+						"path": os.path.abspath(os.path.join(new_directory, "..")),
+						"name": "..",
+						"duration": -1,
+					})
 				continue
 			if os.path.isdir(filepath):
 				duration = -1
