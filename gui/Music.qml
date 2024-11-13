@@ -49,8 +49,9 @@ Item {
 
 				text: display
 				elide: Text.ElideRight
+				verticalAlignment: Text.AlignVCenter
 				color: "white"
-				font.pointSize: 35
+				font.pointSize: 30
 			}
 
 			Image {
