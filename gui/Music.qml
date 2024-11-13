@@ -60,9 +60,9 @@ Item {
 
 				visible: music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole) === "type"
 				source: {
-					if(display === "directory") return "graphics/home.svg";
-					if(display === "uncompressed") return "graphics/home.svg";
-					if(display === "compressed") return "graphics/home.svg";
+					if(display === "directory") return "graphics/directory.svg";
+					if(display === "uncompressed") return "graphics/music_lossless.svg";
+					if(display === "compressed") return "graphics/music_lossy.svg"
 					return "";
 				}
 			}
