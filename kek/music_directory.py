@@ -17,6 +17,9 @@ import PySide6.QtCore  # To expose this table to QML.
 import re  # To implement human sorting.
 import typing
 
+import kek.music_metadata  # To get the duration of files quickly.
+
+
 class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 	"""
 	A list of the tracks contained within a certain directory, and their metadata.
@@ -28,6 +31,8 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 		:param parent: The parent element to this QML element, if any.
 		"""
 		super().__init__(parent)
+
+		kek.music_metadata.load()
 
 		user_role = PySide6.QtCore.Qt.UserRole
 		self.role_to_field = {
@@ -130,6 +135,8 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 			logging.warning(f"Trying to set music directory to non-existent path: {new_directory}")
 			return
 
+		kek.music_metadata.add_directory(new_directory)
+
 		entries = [os.path.join(new_directory, f) for f in os.listdir(new_directory)]
 		entries = self.sort_directory(entries)
 		new_music = []
@@ -149,7 +156,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 				filetype = "directory"
 			else:
 				try:
-					duration = mutagen.File(filepath).info.length
+					duration = kek.music_metadata.metadata.get(filepath)["duration"]
 				except mutagen.MutagenError as e:
 					logging.error(f"Unable to get metadata from {filepath}: {e}")
 					duration = -1
