@@ -127,7 +127,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		submusic = filter(lambda x: os.path.splitext(x)[1] in supported_extensions, subfiles)
 
 		convert_numbers = lambda text: float(text) if text.replace(".", "", 1).isdigit() else text.lower()
-		human_sort = lambda key: [convert_numbers(t) for t in re.split(r"([0-9.]+)", key)]
+		human_sort = lambda key: [convert_numbers(t) for t in re.split(r"((?:[0-9]*[.])?[0-9]+)", key)]
 		subdirectories = sorted(subdirectories, key=human_sort)
 		submusic = sorted(submusic, key=human_sort)
 		return [".."] + list(itertools.chain(subdirectories, submusic))
