@@ -25,6 +25,18 @@ def data() -> str:
 	return os.path.join(path, "kek")
 
 
+def cache() -> str:
+	"""
+	Get the location where cache files should be stored.
+	:return: A path to a directory where the cache of the application is stored.
+	"""
+	try:
+		path = os.environ["XDG_CACHE_HOME"]  # XDG standard storage location.
+	except KeyError:
+		path = os.path.join(os.path.expanduser("~"), ".cache")  # Most Linux machines.
+	return os.path.join(path, "kek")
+
+
 def ensure_exists() -> None:
 	"""
 	Ensure that the storage locations all exist.
@@ -35,3 +47,7 @@ def ensure_exists() -> None:
 	if not os.path.exists(data_path):
 		logging.info(f"Creating data directory in {data_path}")
 		os.makedirs(data_path)
+	cache_path = cache()
+	if not os.path.exists(cache_path):
+		logging.info(f"Creating cache directory in {cache_path}")
+		os.makedirs(cache_path)
