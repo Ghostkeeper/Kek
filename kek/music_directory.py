@@ -17,7 +17,7 @@ import PySide6.QtCore  # To expose this table to QML.
 import re  # To implement human sorting.
 import typing
 
-class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
+class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 	"""
 	A list of the tracks contained within a certain directory, and their metadata.
 	"""
@@ -29,7 +29,14 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		"""
 		super().__init__(parent)
 
-		self.column_fields = ["type", "name", "duration"]
+		user_role = PySide6.QtCore.Qt.UserRole
+		self.role_to_field = {
+			user_role + 1: "path",
+			user_role + 2: "type",
+			user_role + 3: "name",
+			user_role + 4: "duration",
+		}
+
 		self.music: list[dict[str, typing.Any]] = []  # The actual data contained in this table.
 
 		music_locations = PySide6.QtCore.QStandardPaths.standardLocations(PySide6.QtCore.QStandardPaths.StandardLocation.MusicLocation)
@@ -54,18 +61,27 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 
 	def columnCount(self, parent: typing.Optional[PySide6.QtCore.QModelIndex]=PySide6.QtCore.QModelIndex()) -> int:
 		"""
-		Returns the number of metadata entries we're displaying in the table.
+		Returns the number of columns in this list, which is always 1.
 		:param parent: The parent to display the child entries under. This is a plain table, so no parent should be
 		provided.
 		:return: The number of metadata entries we're displaying in the table.
 		"""
 		if parent.isValid():
 			return 0
-		return len(self.column_fields)
+		return 1
+
+	def roleNames(self) -> dict[int, bytes]:
+		"""
+		Gets the names of the roles as exposed to QML.
+
+		This function is called internally by Qt to match a model field in the QML code with the roles in this model.
+		:return: A mapping of roles to field names. The field names are bytes.
+		"""
+		return {role: field.encode("utf-8") for role, field in self.role_to_field.items()}
 
 	def data(self, index: PySide6.QtCore.QModelIndex, role: int=PySide6.QtCore.Qt.DisplayRole) -> typing.Any:
 		"""
-		Returns one cell of the table.
+		Returns one field of the data in the list.
 		:param index: The row and column index of the cell to give the data from.
 		:param role: Which data to return for this cell. Defaults to the data displayed, which is the only data we
 		store for a cell.
@@ -73,9 +89,9 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		"""
 		if not index.isValid():
 			return None  # Only valid indices return data.
-		if role != PySide6.QtCore.Qt.DisplayRole:
-			return None  # Only return for the display role.
-		field = self.column_fields[index.column()]
+		if role not in self.role_to_field:
+			return None
+		field = self.role_to_field[role]
 		value = self.music[index.row()][field]
 		if field == "duration":
 			if value < 0:
@@ -83,35 +99,6 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 			seconds = round(value)
 			return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)
 		return str(value)  # Default, just convert to string.
-
-	def flags(self, index: PySide6.QtCore.QModelIndex) -> int:
-		"""
-		Returns metadata properties of a cell.
-		:param index: The cell to get metadata of.
-		:return: The metadata flags for that cell.
-		"""
-		return PySide6.QtCore.Qt.ItemFlag.ItemIsEnabled
-
-	@PySide6.QtCore.Slot(int, int, int, result=str)
-	def headerData(self, section: int, orientation: int, role: int=PySide6.QtCore.Qt.DisplayRole) -> typing.Optional[str]:
-		"""
-		Returns the row or column labels for the table.
-
-		This table doesn't really use any row labels. We'll return the row index, but it shouldn't get displayed.
-		:param section: The row or column index.
-		:param orientation: Whether to get the row labels or the column labels.
-		:param role: Which data to return for the headers. Defaults to the data displayed, which is the only data we
-		can return.
-		:return: The header for the row or column, as a string.
-		"""
-		if role != PySide6.QtCore.Qt.DisplayRole:
-			return None
-		if orientation == 1:  # PySide6.QtCore.Qt.Orientation.Horizontal is an enum, but the QML doesn't give us that.
-			return self.column_fields[section]
-		elif orientation == 2:
-			return self.music[section]["path"]
-		else:
-			return None
 
 	def sort_directory(self, entries: list[str]) -> list[str]:
 		"""
@@ -196,14 +183,3 @@ class MusicDirectory(PySide6.QtCore.QAbstractTableModel):
 		:return: The current directory that this model is looking at.
 		"""
 		return self._directory
-
-	@PySide6.QtCore.Slot(int, result=str)
-	def entry_type(self, row: int) -> str:
-		"""
-		Get the type of entry that is in the directory at this spot.
-
-		This could be a subdirectory, a compressed file or an uncompressed file.
-		:param row: The row of this entry.
-		:return: The type of entry that is.
-		"""
-		return self.music[row]["type"]

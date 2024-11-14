@@ -12,7 +12,7 @@ import "." as Gui
 Item {
 	anchors.fill: parent
 
-	TableView {
+	ListView {
 		id: files_table
 		anchors {
 			top: parent.top
@@ -27,46 +27,61 @@ Item {
 			id: music_directory
 		}
 		delegate: MouseArea {
-			implicitWidth: {
-				const field = music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole);
-				if(field === "type") return 50;
-				if(field === "name") return files_table.width - 200;
-				return 150; //Duration.
-			}
-			implicitHeight: 50
+			width: parent ? parent.width : 0
+			height: 50
 
 			onClicked: {
-				if(music_directory.entry_type(row) === "directory") {
-					music_directory.directory = music_directory.headerData(row, Qt.Vertical, Qt.DisplayRole);
+				if(model.type === "directory") {
+					music_directory.directory = model.path;
 				} else {
 					//TODO: Add to playlist.
 				}
 			}
 
-			Text {
-				anchors.fill: parent
-				visible: music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole) !== "type"
+            Image {
+                id: type_icon
+                width: 50
+                height: 50
+                source: {
+                    if(model.type === "directory") return "graphics/directory.svg";
+                    if(model.type === "uncompressed") return "graphics/music_lossless.svg";
+                    if(model.type === "compressed") return "graphics/music_lossy.svg";
+                    return "";
+                }
+            }
 
-				text: display
+			Text {
+				anchors {
+                    left: type_icon.right
+                    right: duration.left
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+
+				text: model.name
 				elide: Text.ElideRight
 				verticalAlignment: Text.AlignVCenter
 				color: "white"
 				font.pointSize: 30
 			}
 
-			Image {
-				width: 50
-				height: 50
+            Text {
+                id: duration
+                anchors {
+                    right: parent.right
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+                width: 130
 
-				visible: music_directory.headerData(column, Qt.Horizontal, Qt.DisplayRole) === "type"
-				source: {
-					if(display === "directory") return "graphics/directory.svg";
-					if(display === "uncompressed") return "graphics/music_lossless.svg";
-					if(display === "compressed") return "graphics/music_lossy.svg"
-					return "";
-				}
-			}
+                text: model.duration
+                elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
+                color: "white"
+                font.pointSize: 30
+            }
 		}
+
 		ScrollBar.vertical: Gui.ScrollBar {}
 	}
 }
