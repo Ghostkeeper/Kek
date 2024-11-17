@@ -22,6 +22,21 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 	A list of the tracks currently in the playlist.
 	"""
 
+	instance: typing.Optional["Playlist"] = None
+	"""
+	This class is a singleton. This stores the one instance that is allowed to exist.
+	"""
+
+	@classmethod
+	def get_instance(cls) -> "Playlist":
+		"""
+		Gets the singleton instance. If no instance was made yet, it will be instantiated here.
+		:return: The single instance of this class.
+		"""
+		if cls.instance is None:
+			cls.instance = Playlist()
+		return cls.instance
+
 	def __init__(self, parent: typing.Optional[PySide6.QtCore.QObject] = None) -> None:
 		"""
 		Construct a new playlist model.
@@ -125,3 +140,4 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 			self.endInsertRows()
 			self.dataChanged.emit(self.createIndex(index, 0), self.createIndex(index + 1, 0))
 
+instance = Playlist()
