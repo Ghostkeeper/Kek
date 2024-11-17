@@ -10,11 +10,18 @@ Defines a dictionary of metadata about music files, and some functions to edit i
 
 import logging
 import mutagen  # To read metadata from music files.
+import mutagen.easyid3
+import mutagen.flac
+import mutagen.id3
+import mutagen.mp3
+import mutagen.ogg
+import mutagen.wave
 import os.path  # To find the database file.
 import sqlite3  # To store metadata in a database.
 import time  # To store the database after a certain amount of time.
 import threading  # To store the database after a certain amount of time.
 import typing
+import uuid  # To store the cover in a randomly named cache file.
 
 import kek.storage  # To find the database file.
 
@@ -44,10 +51,14 @@ def load() -> None:
 	logging.debug("Reading metadata from music database.")
 
 	new_metadata = {}  # First store it in a local variable (faster). Merge afterwards.
-	for path, duration, cachetime in connection.execute("SELECT * FROM metadata"):
+	for path, duration, title, artist, album, cover, cachetime in connection.execute("SELECT * FROM metadata"):
 		new_metadata[path] = {
 			"path": path,
 			"duration": duration,
+			"title": title,
+			"artist": artist,
+			"album": album,
+			"cover": cover,
 			"cachetime": cachetime,
 		}
 	with metadata_lock:
@@ -105,6 +116,10 @@ def store() -> None:
 		connection.execute("""CREATE TABLE metadata(
 			path text PRIMARY KEY,
 			duration real,
+			title text,
+			artist text,
+			album text,
+			cover text,
 			cachetime real
 		)""")
 	else:
@@ -113,8 +128,8 @@ def store() -> None:
 	local_metadata = metadata  # Cache locally for performance.
 	with metadata_lock:
 		for path, entry in local_metadata.items():
-			connection.execute("INSERT OR REPLACE INTO metadata (path, duration, cachetime) VALUES (?, ?, ?)",
-				(path, entry["duration"], entry["cachetime"]))
+			connection.execute("INSERT OR REPLACE INTO metadata (path, duration, title, artist, album, cover, cachetime) VALUES (?, ?, ?, ?, ?, ?, ?)",
+				(path, entry["duration"], entry["title"], entry["artist"], entry["album"], entry["cover"], entry["cachetime"]))
 	connection.commit()
 
 
@@ -171,16 +186,71 @@ def add_file(path: str) -> None:
 	else:
 		logging.debug(f"Updating metadata for {path} because we don''t have an entry for it yet.")
 
+	cover = ""
+	mime_to_extension = {
+		"image/jpeg": ".jpg",
+		"image/png": ".png",
+		"image/gif": ".gif",
+	}
 	try:
 		f = mutagen.File(path)
+		if type(f) in {mutagen.mp3.MP3, mutagen.wave.WAVE}:  # Uses ID3 tags.
+			id3 = mutagen.easyid3.EasyID3(path)
+			title = id3.get("title", [os.path.splitext(os.path.basename(path))[0]])[0]
+			artist = id3.get("artist", [""])[0]
+			album = id3.get("album", [""])[0]
+			apic_keys = list(filter(lambda t: t.startswith("APIC:"), f.keys()))
+			apics = list(filter(lambda a: len(a.data) > 0, [f[key] for key in apic_keys]))
+			if len(apics) > 0:
+				mime = apics[0].mime
+				if mime in mime_to_extension:
+					extension = mime_to_extension[mime]
+					cover_fname = os.path.join(kek.storage.cache(), "covers", str(uuid.uuid4()) + extension)
+					with open(cover_fname, "wb") as cover_fstream:
+						cover_fstream.write(apics[0].data)
+						cover = cover_fname
+		elif type(f) == mutagen.flac.FLAC:
+			title = f.get("title", [os.path.splitext(os.path.basename(path))[0]])[0]
+			artist = f.get("artist", [""])[0]
+			album = f.get("album", [""])[0]
+			if len(f.pictures) > 0:
+				extension = mime_to_extension[f.pictures[0].mime]
+				cover_fname = os.path.join(kek.storage.cache(), "covers", str(uuid.uuid4()) + extension)
+				with open(cover_fname, "wb") as cover_fstream:
+					cover_fstream.write(f.pictures[0].data)
+					cover = cover_fname
+		elif isinstance(f, mutagen.ogg.OggFileType):  # Vorbis Comment
+			title = f.get("title", [os.path.splitext(os.path.basename(path))[0]])[0]
+			artist = f.get("artist", [""])[0]
+			album = f.get("album", [""])[0]
+			# TODO: Don't know yet how to get album covers from these and have no files to test with.
+		else:  # Unknown file type.
+			title = os.path.splitext(os.path.basename(path))[0]
+			artist = ""
+			album = ""
 		duration = f.info.length
-	except mutagen.MutagenError as e:
-		logging.warning(f"Unable to get metadata from {path}: {e}")
+	except Exception as e:
+		logging.warning(f"{type(e)}: Unable to get metadata from {path}: {e}")
+		title = ""
+		artist = ""
+		album = ""
 		duration = -1
+	# We tend to store the album cover as a separate file in the same directory.
+	if cover == "":
+		dir_name = os.path.basename(os.path.dirname(path))
+		for maybe_cover in {dir_name + ".jpg", dir_name + ".png", dir_name + ".gif"}:
+			maybe_cover = os.path.join(os.path.dirname(path), maybe_cover)
+			if os.path.exists(maybe_cover):
+				cover = maybe_cover
+				break
 
 	add(path, {
 		"path": path,
 		"duration": duration,
+		"title": title,
+		"artist": artist,
+		"album": album,
+		"cover": cover,
 		"cachetime": last_modified,
 	})
 

@@ -51,3 +51,6 @@ def ensure_exists() -> None:
 	if not os.path.exists(cache_path):
 		logging.info(f"Creating cache directory in {cache_path}")
 		os.makedirs(cache_path)
+		covers_dir = os.path.join(cache_path, "covers")
+		if not os.path.exists(covers_dir):
+			os.makedirs(covers_dir)
