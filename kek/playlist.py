@@ -136,7 +136,7 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 				return
 			meta = kek.music_metadata.metadata[path]
 
-			self.beginInsertRows(PySide6.QtCore.QModelIndex(), index, index + 1)
+			self.beginInsertRows(PySide6.QtCore.QModelIndex(), index, index)
 			self.music.insert(index, meta)
 			self.endInsertRows()
 			self.dataChanged.emit(self.createIndex(index, 0), self.createIndex(index + 1, 0))
