@@ -20,6 +20,28 @@ import typing
 import kek.music_metadata  # To get the duration of files quickly.
 
 
+supported_extensions = [".mp3", ".flac", ".ogg", ".opus", ".wav"]
+
+
+def sort_directory(entries: list[str]) -> list[str]:
+	"""
+	Sort the entries in a directory.
+
+	Subdirectories are put on top, supported files below. Both of these are then human-sorted.
+	:param entries: The items in the directory. Provide full file paths, please!
+	:return: Those same items, but reordered in correct sort order.
+	"""
+	subdirectories = filter(os.path.isdir, entries)
+	subfiles = filter(os.path.isfile, entries)
+	submusic = filter(lambda x: os.path.splitext(x)[1] in supported_extensions, subfiles)
+
+	convert_numbers = lambda text: float(text) if text.replace(".", "", 1).isdigit() else text.lower()
+	human_sort = lambda key: [convert_numbers(t) for t in re.split(r"((?:[0-9]*[.])?[0-9]+)", key)]
+	subdirectories = sorted(subdirectories, key=human_sort)
+	submusic = sorted(submusic, key=human_sort)
+	return list(itertools.chain(subdirectories, submusic))
+
+
 class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 	"""
 	A list of the tracks contained within a certain directory, and their metadata.
@@ -105,25 +127,6 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 			return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)
 		return str(value)  # Default, just convert to string.
 
-	def sort_directory(self, entries: list[str]) -> list[str]:
-		"""
-		Sort the entries in a directory.
-
-		Subdirectories are put on top, supported files below. Both of these are then human-sorted.
-		:param entries: The items in the directory. Provide full file paths, please!
-		:return: Those same items, but reordered in correct sort order.
-		"""
-		subdirectories = filter(os.path.isdir, entries)
-		subfiles = filter(os.path.isfile, entries)
-		supported_extensions = [".mp3", ".flac", ".ogg", ".opus"]
-		submusic = filter(lambda x: os.path.splitext(x)[1] in supported_extensions, subfiles)
-
-		convert_numbers = lambda text: float(text) if text.replace(".", "", 1).isdigit() else text.lower()
-		human_sort = lambda key: [convert_numbers(t) for t in re.split(r"((?:[0-9]*[.])?[0-9]+)", key)]
-		subdirectories = sorted(subdirectories, key=human_sort)
-		submusic = sorted(submusic, key=human_sort)
-		return [".."] + list(itertools.chain(subdirectories, submusic))
-
 	def directory_set(self, new_directory: str) -> None:
 		"""
 		Change the current directory that this model is looking at.
@@ -138,7 +141,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 		kek.music_metadata.add_directory(new_directory)
 
 		entries = [os.path.join(new_directory, f) for f in os.listdir(new_directory)]
-		entries = self.sort_directory(entries)
+		entries = [".."] + sort_directory(entries)
 		new_music = []
 		for filepath in entries:
 			logging.debug(f"Listing directory entry: {filepath}")

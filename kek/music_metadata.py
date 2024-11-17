@@ -4,6 +4,10 @@
 # This application is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for details.
 # You should have received a copy of the GNU Affero General Public License along with this application. If not, see <https://gnu.org/licenses/>.
 
+"""
+Defines a dictionary of metadata about music files, and some functions to edit it.
+"""
+
 import logging
 import mutagen  # To read metadata from music files.
 import os.path  # To find the database file.
