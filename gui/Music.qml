@@ -34,7 +34,7 @@ Item {
 				if(model.type === "directory") {
 					music_directory.directory = model.path;
 				} else {
-					playlist.model.add(model.path, 0);
+					playlist.model.add(model.path, playlist.model.rowCount());
 				}
 			}
 
