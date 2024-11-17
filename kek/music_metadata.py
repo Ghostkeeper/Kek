@@ -196,7 +196,7 @@ def add_file(path: str) -> None:
 		f = mutagen.File(path)
 		if type(f) in {mutagen.mp3.MP3, mutagen.wave.WAVE}:  # Uses ID3 tags.
 			id3 = mutagen.easyid3.EasyID3(path)
-			title = id3.get("title", [os.path.splitext(os.path.basename(path))[0]])[0]
+			title = id3.get("title", [""])[0]
 			artist = id3.get("artist", [""])[0]
 			album = id3.get("album", [""])[0]
 			apic_keys = list(filter(lambda t: t.startswith("APIC:"), f.keys()))
@@ -210,7 +210,7 @@ def add_file(path: str) -> None:
 						cover_fstream.write(apics[0].data)
 						cover = cover_fname
 		elif type(f) == mutagen.flac.FLAC:
-			title = f.get("title", [os.path.splitext(os.path.basename(path))[0]])[0]
+			title = f.get("title", [""])[0]
 			artist = f.get("artist", [""])[0]
 			album = f.get("album", [""])[0]
 			if len(f.pictures) > 0:
@@ -235,6 +235,8 @@ def add_file(path: str) -> None:
 		artist = ""
 		album = ""
 		duration = -1
+	if title == "":
+		title = os.path.splitext(os.path.basename(path))[0]
 	# We tend to store the album cover as a separate file in the same directory.
 	if cover == "":
 		dir_name = os.path.basename(os.path.dirname(path))
