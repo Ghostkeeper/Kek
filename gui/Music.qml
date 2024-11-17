@@ -18,8 +18,8 @@ Item {
 			top: parent.top
 			bottom: parent.bottom
 			left: parent.left
-			right: parent.horizontalCenter
 		}
+		width: Math.floor(parent.width / 3)
 
 		flickableDirection: Flickable.VerticalFlick
 		clip: true
@@ -34,29 +34,29 @@ Item {
 				if(model.type === "directory") {
 					music_directory.directory = model.path;
 				} else {
-					//TODO: Add to playlist.
+					playlist.model.add(model.path, 0);
 				}
 			}
 
-            Image {
-                id: type_icon
-                width: 50
-                height: 50
-                source: {
-                    if(model.type === "directory") return "graphics/directory.svg";
-                    if(model.type === "uncompressed") return "graphics/music_lossless.svg";
-                    if(model.type === "compressed") return "graphics/music_lossy.svg";
-                    return "";
-                }
-            }
+			Image {
+				id: type_icon
+				width: 50
+				height: 50
+				source: {
+					if(model.type === "directory") return "graphics/directory.svg";
+					if(model.type === "uncompressed") return "graphics/music_lossless.svg";
+					if(model.type === "compressed") return "graphics/music_lossy.svg";
+					return "";
+				}
+			}
 
 			Text {
 				anchors {
-                    left: type_icon.right
-                    right: duration.left
-                    top: parent.top
-                    bottom: parent.bottom
-                }
+					left: type_icon.right
+					right: duration.left
+					top: parent.top
+					bottom: parent.bottom
+				}
 
 				text: model.name
 				elide: Text.ElideRight
@@ -65,21 +65,51 @@ Item {
 				font.pointSize: 30
 			}
 
-            Text {
-                id: duration
-                anchors {
-                    right: parent.right
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                width: 130
+			Text {
+				id: duration
+				anchors {
+					right: parent.right
+					top: parent.top
+					bottom: parent.bottom
+				}
+				width: 130
 
-                text: model.duration
-                elide: Text.ElideRight
-                verticalAlignment: Text.AlignVCenter
-                color: "white"
-                font.pointSize: 30
-            }
+				text: model.duration
+				elide: Text.ElideRight
+				verticalAlignment: Text.AlignVCenter
+				color: "white"
+				font.pointSize: 30
+			}
+		}
+
+		ScrollBar.vertical: Gui.ScrollBar {}
+	}
+
+	ListView {
+		id: playlist
+		anchors {
+			top: parent.top
+			bottom: parent.bottom
+			right: parent.right
+		}
+		width: Math.floor(parent.width / 3)
+
+		flickableDirection: Flickable.VerticalFlick
+		clip: true
+		model: Kek.Playlist
+		delegate: MouseArea {
+			width: parent ? parent.width : 0
+			height: 50
+
+			Text {
+				anchors.fill: parent
+
+				text: model.title
+				elide: Text.ElideRight
+				verticalAlignment: Text.AlignVCenter
+				color: "white"
+				font.pointSize: 30
+			}
 		}
 
 		ScrollBar.vertical: Gui.ScrollBar {}
