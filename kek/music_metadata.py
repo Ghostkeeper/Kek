@@ -186,6 +186,10 @@ def add_file(path: str) -> None:
 	else:
 		logging.debug(f"Updating metadata for {path} because we don''t have an entry for it yet.")
 
+	title = ""
+	artist = ""
+	album = ""
+	duration = -1
 	cover = ""
 	mime_to_extension = {
 		"image/jpeg": ".jpg",
@@ -194,6 +198,7 @@ def add_file(path: str) -> None:
 	}
 	try:
 		f = mutagen.File(path)
+		duration = f.info.length
 		if type(f) in {mutagen.mp3.MP3, mutagen.wave.WAVE}:  # Uses ID3 tags.
 			id3 = mutagen.easyid3.EasyID3(path)
 			title = id3.get("title", [""])[0]
@@ -224,17 +229,8 @@ def add_file(path: str) -> None:
 			artist = f.get("artist", [""])[0]
 			album = f.get("album", [""])[0]
 			# TODO: Don't know yet how to get album covers from these and have no files to test with.
-		else:  # Unknown file type.
-			title = os.path.splitext(os.path.basename(path))[0]
-			artist = ""
-			album = ""
-		duration = f.info.length
 	except Exception as e:
 		logging.warning(f"{type(e)}: Unable to get metadata from {path}: {e}")
-		title = ""
-		artist = ""
-		album = ""
-		duration = -1
 	if title == "":
 		title = os.path.splitext(os.path.basename(path))[0]
 	# We tend to store the album cover as a separate file in the same directory.
