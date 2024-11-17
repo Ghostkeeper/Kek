@@ -8,6 +8,7 @@
 Defines a Qt model that lists the music files currently in the playlist for playing.
 """
 
+import logging
 import math  # To calculate durations of tracks.
 import os.path  # For adding directories to the playlist.
 import PySide6.QtCore  # This defines a Qt list model.
@@ -89,7 +90,7 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 		"""
 		return {role: field.encode("utf-8") for role, field in self.role_to_field.items()}
 
-	def data(self, index: PySide6.QtCore.QModelIndex, role: int = PySide6.QtCore.Qt.DisplayRole) -> typing.Any:
+	def data(self, index: PySide6.QtCore.QModelIndex, role: int=PySide6.QtCore.Qt.DisplayRole) -> typing.Any:
 		"""
 		Returns one field of the data in the list.
 		:param index: The row and column index of the cell to give the data from.
@@ -139,5 +140,6 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 			self.music.insert(index, meta)
 			self.endInsertRows()
 			self.dataChanged.emit(self.createIndex(index, 0), self.createIndex(index + 1, 0))
+			logging.info(f"Added {path} to the playlist.")
 
 instance = Playlist()
