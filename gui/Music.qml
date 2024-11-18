@@ -58,7 +58,7 @@ Item {
 					bottom: parent.bottom
 				}
 
-				text: model.name
+				text: model.name ? model.name : ""
 				elide: Text.ElideRight
 				verticalAlignment: Text.AlignVCenter
 				color: "white"
@@ -74,7 +74,7 @@ Item {
 				}
 				width: 130
 
-				text: model.duration
+				text: model.duration ? model.duration : ""
 				elide: Text.ElideRight
 				verticalAlignment: Text.AlignVCenter
 				color: "white"
