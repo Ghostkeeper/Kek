@@ -30,11 +30,28 @@ Item {
 			width: parent ? parent.width : 0
 			height: 50
 
+			drag.target: dragged
+			property bool dragActive: drag.active //To be able to listen to drag.active changes.
+			property string filename: model.name ? model.name : ""
+
+			onPressed: {
+				//Prepare for dragging in case we're going to drag it.
+				dragged.x = 0;
+				dragged.y = y;
+			}
 			onClicked: {
 				if(model.type === "directory") {
 					music_directory.directory = model.path;
 				} else {
 					playlist.model.add(model.path, playlist.model.rowCount());
+				}
+			}
+			onDragActiveChanged: {
+				if(drag.active) {
+					dragged_text.text = filename;
+					dragged.visible = true;
+				} else {
+					dragged.visible = false;
 				}
 			}
 
@@ -58,7 +75,7 @@ Item {
 					bottom: parent.bottom
 				}
 
-				text: model.name ? model.name : ""
+				text: filename
 				elide: Text.ElideRight
 				verticalAlignment: Text.AlignVCenter
 				color: "white"
@@ -113,5 +130,32 @@ Item {
 		}
 
 		ScrollBar.vertical: Gui.ScrollBar {}
+	}
+
+	Rectangle {
+		id: dragged
+		width: files_table.width
+		height: 50
+
+		color: "#800080FF"
+		visible: false
+
+		Text {
+			id: dragged_text
+			anchors {
+				left: parent.left
+				leftMargin: 50
+				right: parent.right
+				rightMargin: 130
+				top: parent.top
+				bottom: parent.bottom
+			}
+
+			text: ""
+			elide: Text.ElideRight
+			verticalAlignment: Text.AlignVCenter
+			color: "white"
+			font.pointSize: 30
+		}
 	}
 }
