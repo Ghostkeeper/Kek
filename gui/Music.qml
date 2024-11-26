@@ -22,7 +22,6 @@ Item {
 		width: Math.floor(parent.width / 3)
 
 		flickableDirection: Flickable.VerticalFlick
-		clip: true
 		model: Kek.MusicDirectory {
 			id: music_directory
 		}
@@ -49,9 +48,10 @@ Item {
 			onDragActiveChanged: {
 				if(drag.active) {
 					dragged_text.text = filename;
-					dragged.visible = true;
+					dragged.path = model.path;
+					dragged.Drag.active = true;
 				} else {
-					dragged.visible = false;
+					dragged.Drag.drop();
 				}
 			}
 
@@ -112,7 +112,6 @@ Item {
 		width: Math.floor(parent.width / 3)
 
 		flickableDirection: Flickable.VerticalFlick
-		clip: true
 		model: Kek.Playlist
 		delegate: MouseArea {
 			width: parent ? parent.width : 0
@@ -130,6 +129,28 @@ Item {
 		}
 
 		ScrollBar.vertical: Gui.ScrollBar {}
+
+		DropArea {
+			id: drop_in_playlist
+			anchors.fill: parent
+			onEntered: drop_place_indicator.visible = true
+			onExited: drop_place_indicator.visible = false
+			onDropped: {
+				drop_place_indicator.visible = false;
+				let dropindex = Math.round((drop_place_indicator.y + 2 + parent.contentY) / 50);
+				playlist.model.add(dragged.path, dropindex);
+			}
+		}
+
+		Rectangle {
+			id: drop_place_indicator
+			width: parent.width
+			height: 4
+
+			color: "#007FFF"
+			visible: false
+			y: Math.min(Math.round((dragged.y + 25 + (parent.contentY % 50)) / 50) * 50 - (parent.contentY % 50) - height / 2, playlist.model.rowCount() * 50 - 2 - parent.contentY)
+		}
 	}
 
 	Rectangle {
@@ -138,7 +159,8 @@ Item {
 		height: 50
 
 		color: "#800080FF"
-		visible: false
+		visible: Drag.active
+		property string path: ""
 
 		Text {
 			id: dragged_text
