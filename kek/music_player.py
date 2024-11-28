@@ -23,6 +23,22 @@ class MusicPlayer(PySide6.QtCore.QObject):
 
 	This is a singleton class in order to expose the state to QML.
 	"""
+
+	instance: typing.Optional["MusicPlayer"] = None
+	"""
+	This class is a singleton. This stores the one instance that is allowed to exist.
+	"""
+
+	@classmethod
+	def get_instance(cls) -> "MusicPlayer":
+		"""
+		Gets the singleton instance. If no instance was made yet, it will be instantiated here.
+		:return: The single instance of this class.
+		"""
+		if cls.instance is None:
+			cls.instance = MusicPlayer()
+		return cls.instance
+
 	def __init__(self, parent: typing.Optional[PySide6.QtCore.QObject]=None):
 		"""
 		Construct the music player instance.
@@ -68,6 +84,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 			return
 
 		next_song = current_playlist[self.current_track]
+		logging.info(f"Starting playback of track: {next_song['path']}")
 		self.current_sound = kek.sound.Sound.decode(next_song["path"])
 		self.start_time = time.time()
 		kek.music_playback.play(self.current_sound)
