@@ -38,6 +38,8 @@ def play(new_audio: "kek.sound.Sound") -> None:
 	:param new_audio: The new audio source to play.
 	"""
 	global audio_source
+	global end_position
+	end_position = new_audio.duration()
 	audio_source = new_audio
 
 def stop() -> None:

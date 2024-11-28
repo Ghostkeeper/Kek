@@ -9,6 +9,7 @@ Defines a Sound object, which contains the wave data of a music track.
 """
 
 import ctypes  # For correctly converting Opus files to Numpy.
+import logging
 import miniaudio  # To decode wav, mp3, flac and ogg audio files.
 import numpy  # For fast operations on wave data.
 import os.path  # To decode audio files depending on file extension.
@@ -29,6 +30,7 @@ class Sound:
 		:param filepath: The path to the file to load.
 		:return: A Sound containing the audio data from that file.
 		"""
+		logging.debug(f"Decoding file: {filepath}")
 		_, extension = os.path.splitext(filepath)
 		extension = extension.lower()
 		if extension in {".flac", ".mp3", ".ogg", ".wav"}:
@@ -46,6 +48,7 @@ class Sound:
 			sample_rate = opus_file.frequency
 		else:
 			raise ValueError(f"Trying to decode unsupported file extension {extension}.")
+		logging.debug(f"Decode complete! Channels: {len(channels)}, sample rate: {sample_rate}, num samples: {len(channels[0])}")
 		return Sound(channels, frame_rate=sample_rate)
 
 	def __init__(self, channels: list[numpy.array], frame_rate: int=44100) -> None:
