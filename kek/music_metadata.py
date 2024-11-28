@@ -144,7 +144,7 @@ def has(path: str) -> bool:
 	return path in metadata
 
 
-def get(path: str, field: str) -> typing.Any:
+def get(path: str, field: typing.Optional[str] = None) -> typing.Any:
 	"""
 	Get a metadata field from the cache about a certain file.
 	:param path: The file to get the metadata field from.
@@ -154,7 +154,10 @@ def get(path: str, field: str) -> typing.Any:
 	"""
 	if path not in metadata:
 		add_file(path)
-	return metadata[path][field]
+	if field is None:
+		return metadata[path]
+	else:
+		return metadata[path][field]
 
 
 def add(path: str, entry: typing.Dict[str, typing.Any]) -> None:
@@ -184,7 +187,7 @@ def add_file(path: str) -> None:
 	if path in local_metadata:
 		logging.debug(f"Updating metadata for {path} because {local_metadata[path]['cachetime']} is earlier than {last_modified}")
 	else:
-		logging.debug(f"Updating metadata for {path} because we don''t have an entry for it yet.")
+		logging.debug(f"Updating metadata for {path} because we don't have an entry for it yet.")
 
 	title = ""
 	artist = ""

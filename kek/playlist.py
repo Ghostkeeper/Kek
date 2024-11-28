@@ -136,7 +136,7 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 			extension = os.path.splitext(path)[-1]
 			if extension not in kek.music_directory.supported_extensions:
 				return
-			meta = kek.music_metadata.metadata[path]
+			meta = kek.music_metadata.get(path)
 
 			self.beginInsertRows(PySide6.QtCore.QModelIndex(), index, index)
 			self.music.insert(index, meta)
