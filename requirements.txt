@@ -1,2 +1,5 @@
+miniaudio >= 1.55
 mutagen >= 1.45.1
+numpy >= 1.21.0,<2.0.0
 PySide6 == 6.7.3
+pyogg >= 0.6.14a1
