@@ -124,8 +124,10 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 		:param index: The place in the playlist to insert the track(s). Index 0 means that it gets added to the very
 		start of the playlist, and index len(self.music) means that it will get added to the end.
 		"""
+		logging.info(f"Adding {path} to the playlist at index {index}.")
 		if os.path.isdir(path):
 			entries = os.listdir(path)
+			entries = [os.path.join(path, entry) for entry in entries]
 			entries = kek.music_directory.sort_directory(entries)
 			for entry in entries:
 				self.add(entry, index)
@@ -140,6 +142,5 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 			self.music.insert(index, meta)
 			self.endInsertRows()
 			self.dataChanged.emit(self.createIndex(index, 0), self.createIndex(index + 1, 0))
-			logging.info(f"Added {path} to the playlist.")
 
 instance = Playlist()
