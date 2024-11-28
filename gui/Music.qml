@@ -153,6 +153,23 @@ Item {
 		}
 	}
 
+	Item {
+		id: player
+		anchors {
+			top: parent.top
+			bottom: parent.bottom
+			left: files_table.right
+			right: playlist.left
+		}
+
+		Gui.Button {
+			anchors.centerIn: parent
+
+			source: "graphics/play.svg"
+			onClicked: Kek.MusicPlayer.is_playing = true;
+		}
+	}
+
 	Rectangle {
 		id: dragged
 		width: files_table.width

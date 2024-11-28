@@ -64,6 +64,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 			self.start_time = None
 			self.is_playing_changed.emit()
 
+	@PySide6.QtCore.Property(bool, fset=is_playing_set, notify=is_playing_changed)
 	def is_playing(self) -> bool:
 		"""
 		Get whether any music is currently playing, or should be playing.
@@ -78,7 +79,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		"""
 		Play the next song in the playlist.
 		"""
-		current_playlist = kek.playlist.instance.music
+		current_playlist = kek.playlist.Playlist.get_instance().music
 		if len(current_playlist) == 0:  # Nothing in the playlist.
 			self.is_playing_set(False)
 			return
