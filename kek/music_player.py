@@ -169,6 +169,3 @@ class MusicPlayer(PySide6.QtCore.QObject):
 			return ""
 		seconds = round(current_playlist[self.current_track]["duration"])
 		return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)
-
-
-instance = MusicPlayer()
