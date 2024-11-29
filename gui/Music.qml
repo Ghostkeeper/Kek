@@ -179,7 +179,8 @@ Item {
 			anchors {
 				top: cover_image.bottom
 				topMargin: 50
-				horizontalCenter: parent.horizontalCenter
+				right: parent.horizontalCenter
+				rightMargin: 25
 			}
 
 			source: (Kek.MusicPlayer.is_playing && !Kek.MusicPlayer.is_paused) ? "graphics/pause.svg" : "graphics/play.svg";
@@ -190,6 +191,16 @@ Item {
 					Kek.MusicPlayer.is_playing = true;
 				}
 			}
+		}
+		Gui.Button {
+			anchors {
+				top: cover_image.bottom
+				topMargin: 50
+				left: parent.horizontalCenter
+				leftMargin: 25
+			}
+			source: "graphics/stop.svg"
+			onClicked: Kek.MusicPlayer.is_playing = false;
 		}
 	}
 

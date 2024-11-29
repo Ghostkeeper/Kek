@@ -44,7 +44,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		Construct the music player instance.
 		"""
 		super().__init__(parent)
-		self.current_track = -1  # The index in the playlist that we're currently playing.
+		self.current_track = 0  # The index in the playlist that we're currently playing.
 		self.start_time = None  # The start time (float) if any track is playing, or None if not.
 		self.current_sound = None  # If playing, the decoded wave data (Sound object).
 
@@ -58,7 +58,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		:param new_is_playing: Whether the music should be playing or not.
 		"""
 		if self.current_sound is None and new_is_playing:
-			self.play_next()
+			self.play()
 			self.is_playing_changed.emit()
 		elif self.current_sound is not None and not new_is_playing:
 			logging.info("Stopping playback.")
@@ -101,17 +101,15 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		"""
 		return kek.music_playback.is_paused
 
-	def play_next(self) -> None:
+	def play(self) -> None:
 		"""
-		Play the next song in the playlist.
+		Play the current song.
 		"""
 		current_playlist = kek.playlist.Playlist.get_instance().music
 		if len(current_playlist) == 0:  # Nothing in the playlist.
 			self.is_playing_set(False)
 			return
 
-		self.current_track = (self.current_track + 1) % len(current_playlist)
-		self.current_track_changed.emit()
 		next_song = current_playlist[self.current_track]
 		logging.info(f"Starting playback of track: {next_song['path']}")
 		self.current_sound = kek.sound.Sound.decode(next_song["path"])
