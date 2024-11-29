@@ -153,7 +153,7 @@ Item {
 		}
 	}
 
-	Item {
+	Column {
 		id: player
 		anchors {
 			top: parent.top
@@ -162,11 +162,11 @@ Item {
 			right: playlist.left
 		}
 
+		spacing: 50
+
 		Image {
 			id: cover_image
 			anchors {
-				top: parent.top
-				topMargin: 50
 				horizontalCenter: parent.horizontalCenter
 			}
 			width: 500
@@ -175,32 +175,25 @@ Item {
 			source: Kek.MusicPlayer.current_cover
 		}
 
-		Gui.Button {
-			anchors {
-				top: cover_image.bottom
-				topMargin: 50
-				right: parent.horizontalCenter
-				rightMargin: 25
-			}
+		Row {
+			anchors.horizontalCenter: parent.horizontalCenter
 
-			source: (Kek.MusicPlayer.is_playing && !Kek.MusicPlayer.is_paused) ? "graphics/pause.svg" : "graphics/play.svg";
-			onClicked: {
-				if(Kek.MusicPlayer.is_playing) {
-					Kek.MusicPlayer.is_paused = !Kek.MusicPlayer.is_paused;
-				} else {
-					Kek.MusicPlayer.is_playing = true;
+			spacing: 50
+
+			Gui.Button {
+				source: (Kek.MusicPlayer.is_playing && !Kek.MusicPlayer.is_paused) ? "graphics/pause.svg" : "graphics/play.svg";
+				onClicked: {
+					if(Kek.MusicPlayer.is_playing) {
+						Kek.MusicPlayer.is_paused = !Kek.MusicPlayer.is_paused;
+					} else {
+						Kek.MusicPlayer.is_playing = true;
+					}
 				}
 			}
-		}
-		Gui.Button {
-			anchors {
-				top: cover_image.bottom
-				topMargin: 50
-				left: parent.horizontalCenter
-				leftMargin: 25
+			Gui.Button {
+				source: "graphics/stop.svg"
+				onClicked: Kek.MusicPlayer.is_playing = false;
 			}
-			source: "graphics/stop.svg"
-			onClicked: Kek.MusicPlayer.is_playing = false;
 		}
 
 		Row {
