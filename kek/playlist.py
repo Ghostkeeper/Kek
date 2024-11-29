@@ -16,6 +16,7 @@ import typing
 
 import kek.music_directory  # To add directories of music to the playlist.
 import kek.music_metadata  # To get metadata of music to add.
+import kek.music_player  # To notify the player if its current track changes.
 
 
 class Playlist(PySide6.QtCore.QAbstractListModel):
@@ -56,6 +57,16 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 		}
 
 		self.music: list[dict[str, typing.Any]] = []  # The actual playlist, in order.
+
+	count_changed = PySide6.QtCore.Signal()
+
+	@PySide6.QtCore.Property(int, notify=count_changed)
+	def count(self) -> int:
+		"""
+		Returns the number of music files in the playlist.
+		:return: The number of tracks in the playlist.
+		"""
+		return len(self.music)
 
 	def rowCount(self, parent: typing.Optional[PySide6.QtCore.QModelIndex]=PySide6.QtCore.QModelIndex()) -> int:
 		"""
@@ -142,3 +153,11 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 			self.music.insert(index, meta)
 			self.endInsertRows()
 			self.dataChanged.emit(self.createIndex(index, 0), self.createIndex(index + 1, 0))
+			self.count_changed.emit()
+
+			player = kek.music_player.MusicPlayer.get_instance()
+			if len(self.music) == 1:  # This was the first (only) track being added.
+				player.current_track_changed.emit()
+			if index < player.current_track:  # Inserted before the current track.
+				player.current_track += 1
+				player.current_track_changed.emit()  # To update the highlighter in the playlist.

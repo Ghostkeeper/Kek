@@ -151,6 +151,17 @@ Item {
 			visible: false
 			y: Math.min(Math.round((dragged.y + 25 + (parent.contentY % 50)) / 50) * 50 - (parent.contentY % 50) - height / 2, playlist.model.rowCount() * 50 - 2 - parent.contentY)
 		}
+
+		//Current track highlight.
+		Rectangle {
+			width: parent.width
+			height: 50
+			y: Kek.MusicPlayer.current_track_nr * 50 - parent.contentY
+
+			color: "#007FFF"
+			opacity: 0.5
+			visible: playlist.model.count > 0
+		}
 	}
 
 	Column {

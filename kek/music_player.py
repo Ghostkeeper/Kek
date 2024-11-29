@@ -117,6 +117,14 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		self.start_time = time.time()
 		kek.music_playback.play(self.current_sound)
 
+	@PySide6.QtCore.Property(int, notify=current_track_changed)
+	def current_track_nr(self) -> int:
+		"""
+		Returns the current track index in the playlist.
+		:return: The index in the playlist that is being played, or would be played if we press play.
+		"""
+		return self.current_track
+
 	@PySide6.QtCore.Property(str, notify=current_track_changed)
 	def current_cover(self) -> str:
 		"""
