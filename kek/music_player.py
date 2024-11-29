@@ -144,6 +144,19 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		return self.current_track
 
 	@PySide6.QtCore.Property(str, notify=current_track_changed)
+	def current_title(self) -> str:
+		"""
+		Gives the title of the currently playing song.
+
+		If no song is currently playing, gives an empty string.
+		:return: The title of the currently playing track.
+		"""
+		current_playlist = kek.playlist.Playlist.get_instance().music
+		if self.current_track < 0 or self.current_track >= len(current_playlist):
+			return ""
+		return current_playlist[self.current_track]["title"]
+
+	@PySide6.QtCore.Property(str, notify=current_track_changed)
 	def current_cover(self) -> str:
 		"""
 		Gives the path to the cover image of the currently playing song.

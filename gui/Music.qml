@@ -191,6 +191,18 @@ Item {
 			source: Kek.MusicPlayer.current_cover
 		}
 
+		Text {
+			width: parent.width
+			height: 50
+
+			text: Kek.MusicPlayer.current_title
+			elide: Text.ElideRight
+			horizontalAlignment: Text.AlignHCenter
+			verticalAlignment: Text.AlignVCenter
+			color: "white"
+			font.pointSize: 30
+		}
+
 		Row {
 			anchors.horizontalCenter: parent.horizontalCenter
 
