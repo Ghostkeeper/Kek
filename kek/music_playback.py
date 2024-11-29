@@ -32,6 +32,13 @@ end_position = 0.0
 The location in the track where the song ends (in seconds).
 """
 
+is_paused = False
+"""
+Whether the playback is ongoing, but paused.
+
+While paused the playback thread will not play chunks, but keeps the playback position.
+"""
+
 def play(new_audio: "kek.sound.Sound") -> None:
 	"""
 	Start the playback of a new audio source.
@@ -42,6 +49,10 @@ def play(new_audio: "kek.sound.Sound") -> None:
 	end_position = new_audio.duration()
 	audio_source = new_audio
 
+def toggle_pause() -> None:
+	global is_paused
+	is_paused = not is_paused
+
 def stop() -> None:
 	"""
 	Stop playing any audio.
@@ -50,6 +61,8 @@ def stop() -> None:
 	audio_source = None
 	global current_position
 	current_position = 0.0
+	global is_paused
+	is_paused = False
 
 def play_loop() -> None:
 	"""
@@ -69,10 +82,10 @@ def play_loop() -> None:
 		current_channels = 0
 		current_rate = 0
 		while True:
-			if audio_source is None:
+			if audio_source is None or is_paused:
 				time.sleep(0.2)
 				continue
-			chunk_size = 0.5
+			chunk_size = 0.2
 			chunk = audio_source[current_position:current_position + chunk_size]
 			if chunk.channels[0].itemsize != current_sample_width or chunk.frame_rate != current_rate or len(chunk.channels) != current_channels:
 				# New audio source, so re-generate the stream.

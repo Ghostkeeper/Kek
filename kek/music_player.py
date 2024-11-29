@@ -57,6 +57,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		"""
 		if self.current_sound is None and new_is_playing:
 			self.play_next()
+			self.is_playing_changed.emit()
 		elif self.current_sound is not None and not new_is_playing:
 			logging.info("Stopping playback.")
 			kek.music_playback.stop()
@@ -73,7 +74,30 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		playing.
 		:return: ``True`` if the music is currently playing, or ``False`` if it is stopped.
 		"""
-		return self.start_time is not None
+		return self.current_sound is not None
+
+	is_paused_changed = PySide6.QtCore.Signal()
+
+	def is_paused_set(self, new_is_paused: bool) -> None:
+		"""
+		Pause or resume the music.
+		:param new_is_paused: Whether the music should be paused or running.
+		"""
+		if kek.music_playback.is_paused == new_is_paused:
+			return
+		logging.info(f"Toggling pause to: {new_is_paused}")
+		kek.music_playback.toggle_pause()
+		self.is_paused_changed.emit()
+
+	@PySide6.QtCore.Property(bool, fset=is_paused_set, notify=is_paused_changed)
+	def is_paused(self) -> bool:
+		"""
+		Get whether the music playback is paused.
+
+		If the music is stopped, it cannot be paused as well.
+		:return: ``True`` is the music is currently paused, or ``False`` if it is playing or stopped.
+		"""
+		return kek.music_playback.is_paused
 
 	def play_next(self) -> None:
 		"""

@@ -165,8 +165,14 @@ Item {
 		Gui.Button {
 			anchors.centerIn: parent
 
-			source: "graphics/play.svg"
-			onClicked: Kek.MusicPlayer.is_playing = true;
+			source: (Kek.MusicPlayer.is_playing && !Kek.MusicPlayer.is_paused) ? "graphics/pause.svg" : "graphics/play.svg";
+			onClicked: {
+				if(Kek.MusicPlayer.is_playing) {
+					Kek.MusicPlayer.is_paused = !Kek.MusicPlayer.is_paused;
+				} else {
+					Kek.MusicPlayer.is_playing = true;
+				}
+			}
 		}
 	}
 
