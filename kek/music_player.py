@@ -49,6 +49,10 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		self.start_time = None  # The start time (float) if any track is playing, or None if not.
 		self.current_sound = None  # If playing, the decoded wave data (Sound object).
 
+		self.song_end_timer = PySide6.QtCore.QTimer()
+		self.song_end_timer.setSingleShot(True)
+		self.song_end_timer.timeout.connect(self.play_next)
+
 	current_track_changed = PySide6.QtCore.Signal()
 
 	is_playing_changed = PySide6.QtCore.Signal()
@@ -109,6 +113,8 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		next_song = current_playlist[self.current_track]
 		logging.info(f"Starting playback of track: {next_song['path']}")
 		self.current_sound = kek.sound.Sound.decode(next_song["path"])
+		self.song_end_timer.setInterval(round(next_song["duration"] * 1000) + 2000)  # 2 seconds between songs.
+		self.song_end_timer.start()
 		self.start_time = time.time()
 		kek.music_playback.play(self.current_sound)
 		self.is_playing_changed.emit()
@@ -122,6 +128,16 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		self.current_sound = None
 		self.start_time = None
 		self.is_playing_changed.emit()
+
+	def play_next(self) -> None:
+		"""
+		Advance the current track and play the next track.
+		"""
+		logging.info(f"Continuing with the next track.")
+		playlist = kek.playlist.Playlist.get_instance().music
+		self.current_track = (self.current_track + 1) % len(playlist)
+		self.current_track_changed.emit()
+		self.play()
 
 	def current_track_nr_set(self, new_current_track: int) -> None:
 		"""
@@ -182,6 +198,19 @@ class MusicPlayer(PySide6.QtCore.QObject):
 			return ""
 		seconds = round(current_playlist[self.current_track]["duration"])
 		return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)
+
+	@PySide6.QtCore.Property(float, notify=current_track_changed)
+	def current_duration_float(self) -> float:
+		"""
+		Gives the duration of the currently playing track, in seconds as a float.
+
+		This version does not format it. It returns a number for use of the progress animation.
+		:return: The duration of the currently playing track.
+		"""
+		current_playlist = kek.playlist.Playlist.get_instance().music
+		if self.current_track < 0 or self.current_track >= len(current_playlist):
+			return 0.0
+		return current_playlist[self.current_track]["duration"]
 
 	@PySide6.QtCore.Slot(result=str)
 	def current_playtime(self) -> str:
