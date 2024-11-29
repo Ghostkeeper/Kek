@@ -126,6 +126,11 @@ Item {
 				color: "white"
 				font.pointSize: 30
 			}
+
+			onClicked: {
+				Kek.MusicPlayer.current_track_nr = index;
+				Kek.MusicPlayer.is_playing = true;
+			}
 		}
 
 		ScrollBar.vertical: Gui.ScrollBar {}

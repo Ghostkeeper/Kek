@@ -60,13 +60,8 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		"""
 		if self.current_sound is None and new_is_playing:
 			self.play()
-			self.is_playing_changed.emit()
 		elif self.current_sound is not None and not new_is_playing:
-			logging.info("Stopping playback.")
-			kek.music_playback.stop()
-			self.current_sound = None
-			self.start_time = None
-			self.is_playing_changed.emit()
+			self.stop()
 
 	@PySide6.QtCore.Property(bool, fset=is_playing_set, notify=is_playing_changed)
 	def is_playing(self) -> bool:
@@ -116,8 +111,31 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		self.current_sound = kek.sound.Sound.decode(next_song["path"])
 		self.start_time = time.time()
 		kek.music_playback.play(self.current_sound)
+		self.is_playing_changed.emit()
 
-	@PySide6.QtCore.Property(int, notify=current_track_changed)
+	def stop(self) -> None:
+		"""
+		Stop playing any music.
+		"""
+		logging.info("Stopping playback.")
+		kek.music_playback.stop()
+		self.current_sound = None
+		self.start_time = None
+		self.is_playing_changed.emit()
+
+	def current_track_nr_set(self, new_current_track: int) -> None:
+		"""
+		Changes the current track.
+
+		This doesn't automatically start playing the newly selected track.
+		:param new_current_track: The track to select.
+		"""
+		self.stop()
+		self.current_track = new_current_track
+		self.current_track_changed.emit()
+		self.play()
+
+	@PySide6.QtCore.Property(int, fset=current_track_nr_set, notify=current_track_changed)
 	def current_track_nr(self) -> int:
 		"""
 		Returns the current track index in the playlist.
