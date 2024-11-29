@@ -182,3 +182,16 @@ class MusicPlayer(PySide6.QtCore.QObject):
 			return ""
 		seconds = round(current_playlist[self.current_track]["duration"])
 		return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)
+
+	@PySide6.QtCore.Slot(result=str)
+	def current_playtime(self) -> str:
+		"""
+		Read the current time since the track started playing.
+
+		The duration gets formatted for display.
+
+		This does not have an automatic update mechanism since it continuously updates.
+		:return: The position in the current track where we are playing.
+		"""
+		seconds = round(kek.music_playback.current_position)
+		return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)

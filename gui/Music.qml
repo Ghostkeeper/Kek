@@ -226,6 +226,20 @@ Item {
 		}
 
 		Row {
+			Text { //Current playtime.
+				text: ""
+				elide: Text.ElideRight
+				verticalAlignment: Text.AlignVCenter
+				color: "white"
+				font.pointSize: 30
+
+				Timer {
+					interval: 100;
+					running: player.visible
+					repeat: true
+					onTriggered: parent.text = Kek.MusicPlayer.current_playtime();
+				}
+			}
 			Text { //Total duration.
 				text: Kek.MusicPlayer.current_duration
 				elide: Text.ElideRight
