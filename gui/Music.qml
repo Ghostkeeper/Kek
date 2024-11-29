@@ -178,6 +178,7 @@ Item {
 			right: playlist.left
 		}
 
+		visible: Kek.MusicPlayer.current_duration !== ""
 		spacing: 50
 
 		Image {
