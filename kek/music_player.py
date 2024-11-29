@@ -44,9 +44,11 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		Construct the music player instance.
 		"""
 		super().__init__(parent)
-		self.current_track = 0  # The index in the playlist that we're currently playing.
+		self.current_track = -1  # The index in the playlist that we're currently playing.
 		self.start_time = None  # The start time (float) if any track is playing, or None if not.
 		self.current_sound = None  # If playing, the decoded wave data (Sound object).
+
+	current_track_changed = PySide6.QtCore.Signal()
 
 	is_playing_changed = PySide6.QtCore.Signal()
 
@@ -108,11 +110,26 @@ class MusicPlayer(PySide6.QtCore.QObject):
 			self.is_playing_set(False)
 			return
 
+		self.current_track = (self.current_track + 1) % len(current_playlist)
+		self.current_track_changed.emit()
 		next_song = current_playlist[self.current_track]
 		logging.info(f"Starting playback of track: {next_song['path']}")
 		self.current_sound = kek.sound.Sound.decode(next_song["path"])
 		self.start_time = time.time()
 		kek.music_playback.play(self.current_sound)
+
+	@PySide6.QtCore.Property(str, notify=current_track_changed)
+	def current_cover(self) -> str:
+		"""
+		Gives the path to the cover image of the currently playing song.
+
+		If no song is currently playing, gives an empty string.
+		:return: A path to an image file.
+		"""
+		current_playlist = kek.playlist.Playlist.get_instance().music
+		if self.current_track < 0 or self.current_track >= len(current_playlist):
+			return ""
+		return current_playlist[self.current_track]["cover"]
 
 
 instance = MusicPlayer()

@@ -162,8 +162,25 @@ Item {
 			right: playlist.left
 		}
 
+		Image {
+			id: cover_image
+			anchors {
+				top: parent.top
+				topMargin: 50
+				horizontalCenter: parent.horizontalCenter
+			}
+			width: parent.width * 2 / 3
+			height: width
+
+			source: Kek.MusicPlayer.current_cover
+		}
+
 		Gui.Button {
-			anchors.centerIn: parent
+			anchors {
+				top: cover_image.bottom
+				topMargin: 50
+				horizontalCenter: parent.horizontalCenter
+			}
 
 			source: (Kek.MusicPlayer.is_playing && !Kek.MusicPlayer.is_paused) ? "graphics/pause.svg" : "graphics/play.svg";
 			onClicked: {
