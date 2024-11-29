@@ -169,7 +169,7 @@ Item {
 				topMargin: 50
 				horizontalCenter: parent.horizontalCenter
 			}
-			width: parent.width * 2 / 3
+			width: 500
 			height: width
 
 			source: Kek.MusicPlayer.current_cover
@@ -201,6 +201,16 @@ Item {
 			}
 			source: "graphics/stop.svg"
 			onClicked: Kek.MusicPlayer.is_playing = false;
+		}
+
+		Row {
+			Text { //Total duration.
+				text: Kek.MusicPlayer.current_duration
+				elide: Text.ElideRight
+				verticalAlignment: Text.AlignVCenter
+				color: "white"
+				font.pointSize: 30
+			}
 		}
 	}
 

@@ -9,6 +9,7 @@ Keeps track and controls the currently playing music.
 """
 
 import logging
+import math  # For correctly formatting the duration of the track.
 import PySide6.QtCore  # For exposing these controls to QML.
 import time  # Tracking the time played.
 import typing
@@ -128,6 +129,20 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		if self.current_track < 0 or self.current_track >= len(current_playlist):
 			return ""
 		return current_playlist[self.current_track]["cover"]
+
+	@PySide6.QtCore.Property(str, notify=current_track_changed)
+	def current_duration(self) -> str:
+		"""
+		Gives the duration of the currently playing track.
+
+		The duration gets formatted for display.
+		:return: The duration of the currently playing track.
+		"""
+		current_playlist = kek.playlist.Playlist.get_instance().music
+		if self.current_track < 0 or self.current_track >= len(current_playlist):
+			return ""
+		seconds = round(current_playlist[self.current_track]["duration"])
+		return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)
 
 
 instance = MusicPlayer()
