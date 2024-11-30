@@ -161,3 +161,23 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 			if index < player.current_track:  # Inserted before the current track.
 				player.current_track += 1
 				player.current_track_changed.emit()  # To update the highlighter in the playlist.
+
+	@PySide6.QtCore.Slot(int)
+	def remove(self, index: int) -> None:
+		"""
+		Remove the item at the given position from the playlist.
+		:param index: The index of the item to remove.
+		"""
+		logging.info(f"Removing index {index} from playlist ({self.music[index]['path']})")
+		self.beginRemoveRows(PySide6.QtCore.QModelIndex(), index, index)
+		self.music.pop(index)
+		self.endRemoveRows()
+
+		player = kek.music_player.MusicPlayer.get_instance()
+		if index < player.current_track:  # Removed before the current track.
+			player.current_track -= 1
+			player.current_track_changed.emit()  # To update the highlighter in the playlist.
+		elif index == player.current_track:
+			player.stop()
+			player.play()
+			player.current_track_changed.emit()

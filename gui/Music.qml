@@ -115,23 +115,55 @@ Item {
 
 		flickableDirection: Flickable.VerticalFlick
 		model: Kek.Playlist
-		delegate: MouseArea {
+		delegate: SwipeDelegate {
+			id: playlist_item
 			width: parent ? parent.width : 0
 			height: 50
 
-			Text {
-				anchors.fill: parent
+			opacity: 1 - Math.abs(swipe.position)
 
+			contentItem: Text {
 				text: model.title
 				elide: Text.ElideRight
 				verticalAlignment: Text.AlignVCenter
 				color: "white"
 				font.pointSize: 30
 			}
+			background: Item {}
 
 			onClicked: {
 				Kek.MusicPlayer.current_track_nr = index;
 				Kek.MusicPlayer.is_playing = true;
+			}
+			swipe.right: Item {
+				anchors.right: parent.right
+				width: 200
+				height: parent.height
+			}
+			swipe.left: Item {
+				anchors.left: parent.left
+				width: 200
+				height: parent.height
+			}
+			swipe.onCompleted: playlist.model.remove(index);
+
+			ListView.onRemove: SequentialAnimation {
+				PropertyAction {
+					target: playlist_item
+					property: "ListView.delayRemove"
+					value: true
+				}
+				NumberAnimation {
+					target: playlist_item
+					property: "height"
+					to: 0
+					easing.type: Easing.InOutQuad
+				}
+				PropertyAction {
+					target: playlist_item
+					property: "ListView.delayRemove"
+					value: false
+				}
 			}
 		}
 
