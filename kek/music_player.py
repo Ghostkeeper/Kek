@@ -140,6 +140,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		Advance the current track and play the next track.
 		"""
 		logging.info(f"Continuing with the next track.")
+		self.stop()
 		playlist = kek.playlist.Playlist.get_instance().music
 		self.current_track = (self.current_track + 1) % len(playlist)
 		self.current_track_changed.emit()
