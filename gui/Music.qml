@@ -261,27 +261,74 @@ Item {
 			}
 		}
 
-		Row {
-			Text { //Current playtime.
+		Item {
+			width: parent.width
+			height: 50
+
+			Text {
+				id: current_playtime
+				width: 100
+				height: parent.height
+
 				text: ""
 				elide: Text.ElideRight
 				verticalAlignment: Text.AlignVCenter
 				color: "white"
 				font.pointSize: 30
 
-				Timer {
-					interval: 100;
+				Timer { //Refresh timer for the playtime text.
+					interval: 100; //10fps
 					running: player.visible
 					repeat: true
 					onTriggered: parent.text = Kek.MusicPlayer.current_playtime();
 				}
 			}
 			Text { //Total duration.
+				id: total_duration
+				anchors.right: parent.right
+				width: 100
+				height: parent.height
+
 				text: Kek.MusicPlayer.current_duration
 				elide: Text.ElideRight
+				horizontalAlignment: Text.AlignRight
 				verticalAlignment: Text.AlignVCenter
 				color: "white"
 				font.pointSize: 30
+			}
+			MouseArea {
+				id: progress_bar
+				anchors {
+					left: current_playtime.right
+					right: total_duration.left
+					top: parent.top
+					bottom: parent.bottom
+				}
+
+				Rectangle {
+					height: parent.height
+					width: 0
+
+					color: "#007FFF"
+
+					NumberAnimation on width {
+						id: progress_animation
+						from: 0
+						to: progress_bar.width
+						duration: Kek.MusicPlayer.current_duration_float * 1000
+						running: Kek.MusicPlayer.is_playing
+						readonly property var __: Connections {
+							target: Kek.MusicPlayer
+							function onIs_pausedChanged() {
+								if(Kek.MusicPlayer.is_paused) {
+									progress_animation.pause();
+								} else {
+									progress_animation.resume();
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
