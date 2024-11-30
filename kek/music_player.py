@@ -146,6 +146,20 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		self.current_track_changed.emit()
 		self.play()
 
+	@PySide6.QtCore.Slot(float)
+	def seek(self, fraction: float) -> None:
+		"""
+		Change the current position in the song.
+		:param fraction: A number between 0 and 1, determining where to seek to.
+		"""
+		if not self.is_playing:
+			return
+		kek.music_playback.seek(fraction * self.current_duration_float)
+		if not self.is_paused:
+			self.song_end_timer.stop()
+			self.song_end_timer.setInterval((self.current_duration_float - kek.music_playback.current_position) * 1000)
+			self.song_end_timer.start()
+
 	def current_track_nr_set(self, new_current_track: int) -> None:
 		"""
 		Changes the current track.
@@ -231,3 +245,13 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		"""
 		seconds = round(kek.music_playback.current_position)
 		return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)
+
+	@PySide6.QtCore.Slot(result=float)
+	def current_playtime_float(self) -> float:
+		"""
+		Read the current time since the track started playing, in seconds as a float.
+
+		This version does not format it. It returns a number for use of seeking.
+		:return: The position in the current track where we are playing.
+		"""
+		return kek.music_playback.current_position

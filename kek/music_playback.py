@@ -64,6 +64,14 @@ def stop() -> None:
 	global is_paused
 	is_paused = False
 
+def seek(new_position: float) -> None:
+	"""
+	Change the current position in the song.
+	:param new_position: The new position, in seconds since the start of the song.
+	"""
+	global current_position
+	current_position = new_position
+
 def play_loop() -> None:
 	"""
 	Main loop of the playback server.

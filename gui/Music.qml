@@ -305,6 +305,16 @@ Item {
 					bottom: parent.bottom
 				}
 
+				onClicked: {
+					Kek.MusicPlayer.seek(mouseX / width);
+					progress_animation.from = mouseX;
+					progress_animation.duration = (Kek.MusicPlayer.current_duration_float - Kek.MusicPlayer.current_playtime_float()) * 1000;
+					progress_animation.restart();
+					if(Kek.MusicPlayer.is_paused) {
+						progress_animation.pause();
+					}
+				}
+
 				Rectangle {
 					height: parent.height
 					width: 0
@@ -325,6 +335,10 @@ Item {
 								} else {
 									progress_animation.resume();
 								}
+							}
+							function onCurrent_durationChanged() {
+								progress_animation.from = 0;
+								progress_animation.duration = Kek.MusicPlayer.current_duration_float * 1000;
 							}
 						}
 					}
