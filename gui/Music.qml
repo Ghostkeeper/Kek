@@ -50,6 +50,8 @@ Item {
 					dragged_text.text = filename;
 					dragged.path = model.path;
 					dragged.Drag.active = true;
+					dragged.Drag.hotSpot.x = mouseX;
+					dragged.Drag.hotSpot.y = mouseY;
 				} else {
 					dragged.Drag.drop();
 				}
