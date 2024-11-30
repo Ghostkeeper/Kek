@@ -146,8 +146,10 @@ Item {
 				height: parent.height
 			}
 			swipe.onCompleted: playlist.model.remove(index);
+			ListView.onRemove: remove_animation.start();
 
-			ListView.onRemove: SequentialAnimation {
+			SequentialAnimation {
+				id: remove_animation
 				PropertyAction {
 					target: playlist_item
 					property: "ListView.delayRemove"
