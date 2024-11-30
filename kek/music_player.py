@@ -88,6 +88,11 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		if kek.music_playback.is_paused == new_is_paused:
 			return
 		logging.info(f"Toggling pause to: {new_is_paused}")
+		if new_is_paused:
+			self.song_end_timer.stop()
+		else:
+			self.song_end_timer.setInterval((self.current_duration_float - kek.music_playback.current_position) * 1000)
+			self.song_end_timer.start()
 		kek.music_playback.toggle_pause()
 		self.is_paused_changed.emit()
 
@@ -113,7 +118,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		next_song = current_playlist[self.current_track]
 		logging.info(f"Starting playback of track: {next_song['path']}")
 		self.current_sound = kek.sound.Sound.decode(next_song["path"])
-		self.song_end_timer.setInterval(round(next_song["duration"] * 1000) + 2000)  # 2 seconds between songs.
+		self.song_end_timer.setInterval(round(next_song["duration"] * 1000))
 		self.song_end_timer.start()
 		self.start_time = time.time()
 		kek.music_playback.play(self.current_sound)
@@ -128,6 +133,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		self.current_sound = None
 		self.start_time = None
 		self.is_playing_changed.emit()
+		self.song_end_timer.stop()
 
 	def play_next(self) -> None:
 		"""
