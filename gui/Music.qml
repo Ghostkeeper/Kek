@@ -276,6 +276,16 @@ Item {
 			width: parent.width
 			height: 50
 
+			Timer { //Refresh timer for the playtime text and progress bar width.
+				interval: 100; //10fps
+				running: player.visible
+				repeat: true
+				onTriggered: {
+					current_playtime.text = Kek.MusicPlayer.current_playtime();
+					progress_bar.width = Kek.MusicPlayer.current_playtime_float() / Kek.MusicPlayer.current_duration_float * progress_bar_background.width;
+				}
+			}
+
 			Text {
 				id: current_playtime
 				width: 100
@@ -286,13 +296,6 @@ Item {
 				verticalAlignment: Text.AlignVCenter
 				color: "white"
 				font.pointSize: 30
-
-				Timer { //Refresh timer for the playtime text.
-					interval: 100; //10fps
-					running: player.visible
-					repeat: true
-					onTriggered: parent.text = Kek.MusicPlayer.current_playtime();
-				}
 			}
 			Text { //Total duration.
 				id: total_duration
@@ -308,7 +311,7 @@ Item {
 				font.pointSize: 30
 			}
 			MouseArea {
-				id: progress_bar
+				id: progress_bar_background
 				anchors {
 					left: current_playtime.right
 					right: total_duration.left
@@ -316,43 +319,14 @@ Item {
 					bottom: parent.bottom
 				}
 
-				onClicked: {
-					Kek.MusicPlayer.seek(mouseX / width);
-					progress_animation.from = mouseX;
-					progress_animation.duration = (Kek.MusicPlayer.current_duration_float - Kek.MusicPlayer.current_playtime_float()) * 1000;
-					progress_animation.restart();
-					if(Kek.MusicPlayer.is_paused) {
-						progress_animation.pause();
-					}
-				}
+				onClicked: Kek.MusicPlayer.seek(mouseX / width);
 
 				Rectangle {
+					id: progress_bar
 					height: parent.height
-					width: 0
+					width: Kek.MusicPlayer.current_playtime_float() / Kek.MusicPlayer.current_duration_float * progress_bar_background.width
 
 					color: "#007FFF"
-
-					NumberAnimation on width {
-						id: progress_animation
-						from: 0
-						to: progress_bar.width
-						duration: Kek.MusicPlayer.current_duration_float * 1000
-						running: Kek.MusicPlayer.is_playing
-						readonly property var __: Connections {
-							target: Kek.MusicPlayer
-							function onIs_pausedChanged() {
-								if(Kek.MusicPlayer.is_paused) {
-									progress_animation.pause();
-								} else {
-									progress_animation.resume();
-								}
-							}
-							function onCurrent_durationChanged() {
-								progress_animation.from = 0;
-								progress_animation.duration = Kek.MusicPlayer.current_duration_float * 1000;
-							}
-						}
-					}
 				}
 			}
 		}
