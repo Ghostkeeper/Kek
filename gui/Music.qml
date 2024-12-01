@@ -36,7 +36,7 @@ Item {
 			onPressed: {
 				//Prepare for dragging in case we're going to drag it.
 				dragged.x = 0;
-				dragged.y = y;
+				dragged.y = y - files_table.contentY;
 			}
 			onClicked: {
 				if(model.type === "directory") {
