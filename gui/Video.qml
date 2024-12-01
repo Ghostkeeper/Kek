@@ -9,8 +9,74 @@ import QtQuick.Controls
 import Kek 1.0 as Kek
 import "." as Gui
 
-Item {
+Row {
 	anchors.fill: parent
 
-	
+	spacing: 20
+
+	Column { //Documentaries column.
+		width: (parent.width - 40) / 3
+		height: parent.height
+
+		Image {
+			anchors.horizontalCenter: parent.horizontalCenter
+
+			source: "graphics/documentaries.jpg"
+
+			Image {
+				anchors {
+					left: parent.left
+					right: parent.right
+					bottom: parent.bottom
+				}
+				height: 200
+
+				source: "graphics/fade_black.svg"
+			}
+		}
+	}
+
+	Column { //Films column.
+		width: (parent.width - 40) / 3
+		height: parent.height
+
+		Image {
+			anchors.horizontalCenter: parent.horizontalCenter
+
+			source: "graphics/films.jpg"
+
+			Image {
+				anchors {
+					left: parent.left
+					right: parent.right
+					bottom: parent.bottom
+				}
+				height: 200
+
+				source: "graphics/fade_black.svg"
+			}
+		}
+	}
+
+	Column { //Series column.
+		width: (parent.width - 40) / 3
+		height: parent.height
+
+		Image {
+			anchors.horizontalCenter: parent.horizontalCenter
+
+			source: "graphics/series.jpg"
+
+			Image {
+				anchors {
+					left: parent.left
+					right: parent.right
+					bottom: parent.bottom
+				}
+				height: 200
+
+				source: "graphics/fade_black.svg"
+			}
+		}
+	}
 }
