@@ -56,16 +56,23 @@ Item {
 		onClicked: {
 			pulse.centre = Qt.point(x + width / 2, y + height / 2);
 			pulse.animationFinished = function() {
-				pageSwapper.source = "Music.qml"
+				pageSwapper.source = "Music.qml";
 			};
 			timeAnimation.restart();
 		}
 	}
-	Image {
+	Gui.Button {
 		x: parent.width / 2 - width / 2
 		y: parent.height / 2 + 463.013 - height / 2 //cos(30)*250*2 + 30 = 463.013
 
-		source: "graphics/hexagon.svg"
+		source: "graphics/tile_video.svg"
+		onClicked: {
+			pulse.centre = Qt.point(x + width / 2, y + height / 2);
+			pulse.animationFinished = function() {
+				pageSwapper.source = "Video.qml";
+			}
+			timeAnimation.restart();
+		}
 	}
 	Image {
 		x: parent.width / 2 - 400.981 - width / 2
