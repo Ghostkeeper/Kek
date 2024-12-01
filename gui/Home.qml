@@ -44,7 +44,7 @@ Item {
 		id: centre_hex
 		anchors.centerIn: parent
 
-		source: "graphics/hexagon.svg"
+		source: "graphics/tile_logo.svg"
 	}
 
 	//Circle of 6 hexagons surrounding the centre.

@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
+<polygon fill="#007FFF" points="500,250 375,33.494 125,33.494 0,250 125,466.506 375,466.506" />
+<polygon points="490,250 370,42.154 130,42.154 10,250 130,457.846 370,457.846" />
+<polygon fill="none" stroke="#007FFF" stroke-width="5" points="400,250 325,120.096 175,120.096 100,250 175,379.904 325,379.904" />
+<text fill="#007FFF" x="250" y="250" text-anchor="middle" font-family="sans" font-size="30" font-weight="800" alignment-baseline="central">Ruben's Tafel</text>
+</svg>
