@@ -203,6 +203,17 @@ Item {
 			opacity: 0.5
 			visible: playlist.model.count > 0
 		}
+
+		Gui.Button {
+			anchors {
+				bottom: parent.bottom
+				right: parent.right
+				rightMargin: 250 //Width of the home button, with 50px spacing.
+			}
+
+			source: "graphics/clear.svg"
+			onClicked: playlist.model.clear()
+		}
 	}
 
 	Column {

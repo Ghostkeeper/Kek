@@ -181,3 +181,17 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 			player.stop()
 			player.play()
 			player.current_track_changed.emit()
+
+	@PySide6.QtCore.Slot()
+	def clear(self) -> None:
+		"""
+		Removes all entries from the playlist.
+		"""
+		logging.info(f"Clearing playlist.")
+		self.beginRemoveRows(PySide6.QtCore.QModelIndex(), 0, len(self.music))
+		self.music.clear()
+		self.endRemoveRows()
+		player = kek.music_player.MusicPlayer.get_instance()
+		player.stop()
+		player.current_track = 0
+		player.current_track_changed.emit()
