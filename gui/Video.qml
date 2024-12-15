@@ -41,6 +41,7 @@ Row {
 		height: parent.height
 
 		Image {
+			id: films_header
 			anchors.horizontalCenter: parent.horizontalCenter
 
 			source: "graphics/films.jpg"
@@ -55,6 +56,78 @@ Row {
 
 				source: "graphics/fade_black.svg"
 			}
+		}
+
+		ListView {
+			id: films_table
+			width: parent.width
+			height: parent.height - films_header.height - parent.spacing
+
+			flickableDirection: Flickable.VerticalFlick
+			model: Kek.VideoDirectory {
+				id: films_directory
+			}
+			delegate: MouseArea {
+				width: parent ? parent.width : 0
+				height: 50
+
+				Image {
+					id: type_icon
+					width: 50
+					height: 50
+					source: {
+						if(model.type === "directory") return "graphics/directory.svg";
+						if(model.type === "film") return "graphics/music_lossless.svg"; //TODO: Create an icon.
+						if(model.type === "unsupported") return "graphics/music_lossy.svg";
+						return "";
+					}
+				}
+
+				Text {
+					anchors {
+						left: type_icon.right
+						right: year.right
+						top: parent.top
+						bottom: parent.bottom
+					}
+
+					text: model.title
+					elide: Text.ElideLeft
+					verticalAlignment: Text.AlignVCenter
+					color: "white"
+					font.pointSize: 30
+				}
+				Text {
+					id: year
+					anchors {
+						right: rating.left
+						top: parent.top
+						bottom: parent.bottom
+					}
+					width: 100
+
+					text: model.year ? "" + model.year : ""
+					verticalAlignment: Text.AlignVCenter
+					color: "white"
+					font.pointSize: 30
+				}
+				Text {
+					id: rating
+					anchors {
+						right: parent.right
+						top: parent.top
+						bottom: parent.bottom
+					}
+					width: 50
+
+					text: model.rating ? "" + model.rating : ""
+					verticalAlignment: Text.AlignVCenter
+					color: "white"
+					font.pointSize: 30
+				}
+			}
+
+			ScrollBar.vertical: Gui.ScrollBar {}
 		}
 	}
 

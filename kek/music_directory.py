@@ -71,6 +71,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 			self.default_directory = music_locations[0]
 		else:
 			self.default_directory = os.path.expanduser("~/Music")
+		self.default_directory = "/home/trin/Gedeeld/Music"  # Debug!
 		self._directory = ""
 		self.directory_set(self.default_directory)
 

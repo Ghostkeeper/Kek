@@ -16,6 +16,7 @@ import typing
 import kek.music_directory
 import kek.music_player
 import kek.playlist
+import kek.video_directory
 
 
 class Application(PySide6.QtWidgets.QApplication):
@@ -48,6 +49,7 @@ class Application(PySide6.QtWidgets.QApplication):
 		PySide6.QtQml.qmlRegisterSingletonInstance(kek.music_player.MusicPlayer, "Kek", 1, 0, "MusicPlayer", kek.music_player.MusicPlayer.get_instance())
 		PySide6.QtQml.qmlRegisterSingletonInstance(kek.playlist.Playlist, "Kek", 1, 0, "Playlist", kek.playlist.Playlist.get_instance())
 		PySide6.QtQml.qmlRegisterType(kek.music_directory.MusicDirectory, "Kek", 1, 0, "MusicDirectory")
+		PySide6.QtQml.qmlRegisterType(kek.video_directory.VideoDirectory, "Kek", 1, 0, "VideoDirectory")
 
 		logging.debug("Loading QML engine.")
 		self.engine = PySide6.QtQml.QQmlApplicationEngine()
