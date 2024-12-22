@@ -12,7 +12,6 @@ import logging
 import os.path  # To list files in the video directory.
 import PySide6.QtCore  # To expose this table to QML.
 import re  # For human sorting.
-import itertools  # For human sorting.
 import typing
 
 
@@ -140,7 +139,7 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 
 		entries = []
 		for directory in directories:
-			entries.extend([os.path.join(new_directory, f) for f in os.listdir(directory)])
+			entries.extend([os.path.join(directory, f) for f in os.listdir(directory)])
 		metadata = []
 		for entry in entries:
 			entry_dict = {"path": entry}
@@ -169,7 +168,7 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 		}
 		entries = [parent_path_entry] + self.sort_directory(metadata)
 
-		# Remove all old data from the list. We''re assuming that since the directory changed, all files will be different.
+		# Remove all old data from the list. We're assuming that since the directory changed, all files will be different.
 		self.beginRemoveRows(PySide6.QtCore.QModelIndex(), 0, len(self.videos) - 1)
 		self.videos.clear()
 		self.endRemoveRows()
