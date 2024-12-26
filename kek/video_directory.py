@@ -148,7 +148,7 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 			elif os.path.splitext(entry)[1] in [".mkv", ".mp4", ".avi", ".m2ts", ".divx"]:
 				entry_dict["type"] = "film"
 			else:
-				entry_dict["type"] = "unsupported"
+				continue  # Unsupported / unknown file type.
 			find_title = re.search(r"(.+)\(\d+(?: - \d+)?\)\d{1,2}", entry)
 			if find_title is not None:
 				entry_dict["title"] = os.path.basename(find_title.group(1))

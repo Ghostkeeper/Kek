@@ -77,8 +77,7 @@ Row {
 					height: 50
 					source: {
 						if(model.type === "directory") return "graphics/directory.svg";
-						if(model.type === "film") return "graphics/music_lossless.svg"; //TODO: Create an icon.
-						if(model.type === "unsupported") return "graphics/music_lossy.svg";
+						if(model.type === "film") return "graphics/video.svg";
 						return "";
 					}
 				}
