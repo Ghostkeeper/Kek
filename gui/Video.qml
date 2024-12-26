@@ -71,6 +71,14 @@ Row {
 				width: parent ? parent.width : 0
 				height: 50
 
+				onClicked: {
+					if(model.type === "directory") {
+						films_directory.directory = model.path;
+					} else {
+						print("TODO: Play video: " + model.path);
+					}
+				}
+
 				Image {
 					id: type_icon
 					width: 50
