@@ -130,9 +130,9 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 			return
 
 		# Under water, we'll combine a few directories as if they are one.
-		if new_directory == os.path.join(self.base_directory, "Films"):
+		if new_directory in [os.path.join(self.base_directory, sub) for sub in ["Films", "Films (1 - 5)", "Films (6 - 7)", "Films (8 - 10)"]]:
 			directories = [os.path.join(self.base_directory, subdir) for subdir in ["Films (1 - 5)", "Films (6 - 7)", "Films (8 - 10)"]]
-		elif new_directory == os.path.join(self.base_directory, "Series"):
+		elif new_directory in [os.path.join(self.base_directory, sub) for sub in ["Series", "Shorts"]]:
 			directories = [os.path.join(self.base_directory, subdir) for subdir in ["Series", "Shorts"]]
 		else:
 			directories = [new_directory]
