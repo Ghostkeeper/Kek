@@ -149,15 +149,15 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 				entry_dict["type"] = "film"
 			else:
 				continue  # Unsupported / unknown file type.
-			find_title = re.search(r"(.+)\(\d+(?: - \d+)?\)\d{1,2}", entry)
+			find_title = re.search(r"(.+)\(\d+(?: - \d+)?\)\d{1,2}", os.path.basename(entry))
 			if find_title is not None:
 				entry_dict["title"] = os.path.basename(find_title.group(1))
 			else:
 				entry_dict["title"] = os.path.splitext(os.path.basename(entry))[0]
-			find_year = re.search(r"\((\d+)(?: - \d+)?\)", entry)
+			find_year = re.search(r"\((\d+)(?: - \d+)?\)", os.path.basename(entry))
 			if find_year is not None:
 				entry_dict["year"] = int(find_year.group(1))
-			find_rating = re.search(r"\(\d+(?: - \d+)?\)(\d{1,2})", entry)
+			find_rating = re.search(r"\(\d+(?: - \d+)?\)(\d{1,2})", os.path.basename(entry))
 			if find_rating is not None:
 				entry_dict["rating"] = int(find_rating.group(1))
 			metadata.append(entry_dict)
