@@ -161,12 +161,15 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 			if find_rating is not None:
 				entry_dict["rating"] = int(find_rating.group(1))
 			metadata.append(entry_dict)
-		parent_path_entry = {
-			"type": "directory",
-			"path": os.path.abspath(os.path.join(new_directory, "..")),
-			"title": "..",
-		}
-		entries = [parent_path_entry] + self.sort_directory(metadata)
+		if new_directory != self.default_directory:
+			parent_path_entry = [{
+				"type": "directory",
+				"path": os.path.abspath(os.path.join(new_directory, "..")),
+				"title": "..",
+			}]
+		else:
+			parent_path_entry = []
+		entries = parent_path_entry + self.sort_directory(metadata)
 
 		# Remove all old data from the list. We're assuming that since the directory changed, all files will be different.
 		self.beginRemoveRows(PySide6.QtCore.QModelIndex(), 0, len(self.videos) - 1)
