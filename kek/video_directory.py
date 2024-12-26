@@ -135,7 +135,7 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 		elif new_directory == os.path.join(self.base_directory, "Series"):
 			directories = [os.path.join(self.base_directory, subdir) for subdir in ["Series", "Shorts"]]
 		else:
-			directories = new_directory
+			directories = [new_directory]
 
 		entries = []
 		for directory in directories:
