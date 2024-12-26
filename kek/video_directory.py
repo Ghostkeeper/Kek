@@ -46,10 +46,10 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 		self.videos: list[dict[str, typing.Any]] = []  # The actual data contained in this table.
 		self._sort_by = "rating"
 
-		self.base_directory = "/run/user/1000/gvfs/sftp:host=192.168.1.172,user=ruben/backup/backups/Filmdisk"
-		self.default_directory = self.base_directory + "/Films"
+		self.base_directory = "/run/user/1000/gvfs/sftp:host=192.168.1.172,user=ruben/backup/backups/Filmdisk/"
+		self._default_directory = "Films"
 		self._directory = ""
-		self.directory_set(self.default_directory)
+		self.directory_set(self.base_directory + self._default_directory)
 
 	def rowCount(self, parent: typing.Optional[PySide6.QtCore.QModelIndex]=PySide6.QtCore.QModelIndex()) -> int:
 		"""
@@ -189,3 +189,29 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 		:return: The current directory that this model is looking at.
 		"""
 		return self._directory
+
+	def default_directory_set(self, new_default_directory: str) -> None:
+		"""
+		Change the default directory of the model.
+
+		The default directory is the root of the directory structure that the model can navigate
+		through. Since our directory structure for videos is by category, this essentially denotes
+		which category of videos this model will show.
+		:param new_default_directory: The new value of the default directory.
+		"""
+		if self._default_directory == new_default_directory:
+			return  # Nothing changed.
+		self._default_directory = new_default_directory
+		self.directory_set(self.base_directory + new_default_directory)
+
+	@PySide6.QtCore.Property(str, fset=default_directory_set)
+	def default_directory(self) -> str:
+		"""
+		The current default directory of this model.
+
+		The default directory is the root of the directory structure that the model can navigate
+		through. Since our directory structure for videos is by category, this essentially denotes
+		which category of videos this model will show.
+		:return: The current default directory of this model.
+		"""
+		return self._default_directory

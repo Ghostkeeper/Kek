@@ -66,6 +66,7 @@ Row {
 			flickableDirection: Flickable.VerticalFlick
 			model: Kek.VideoDirectory {
 				id: films_directory
+				default_directory: "Series"
 			}
 			delegate: MouseArea {
 				width: parent ? parent.width : 0
@@ -99,7 +100,7 @@ Row {
 					}
 
 					text: model.title
-					elide: Text.ElideLeft
+					elide: Text.ElideRight
 					verticalAlignment: Text.AlignVCenter
 					color: "white"
 					font.pointSize: 30
