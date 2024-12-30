@@ -43,6 +43,7 @@ class MusicPlayer(PySide6.QtCore.QObject):
 	def __init__(self, parent: typing.Optional[PySide6.QtCore.QObject]=None):
 		"""
 		Construct the music player instance.
+		:param parent: The parent object of this QObject, if any.
 		"""
 		super().__init__(parent)
 		self.current_track = 0  # The index in the playlist that we're currently playing.
