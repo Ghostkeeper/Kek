@@ -20,7 +20,7 @@ import typing
 import kek.music_metadata  # To get the duration of files quickly.
 
 
-supported_extensions = [".mp3", ".flac", ".ogg", ".opus", ".wav"]
+supported_extensions = [".mp3", ".flac", ".ogg", ".opus", ".wav", ".m3u"]
 
 
 def sort_directory(entries: list[str]) -> list[str]:

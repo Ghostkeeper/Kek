@@ -1,5 +1,5 @@
 # Desktop environment for a domotics hub.
-# Copyright (C) 2024 Ghostkeeper
+# Copyright (C) 2025 Ghostkeeper
 # This application is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 # This application is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for details.
 # You should have received a copy of the GNU Affero General Public License along with this application. If not, see <https://gnu.org/licenses/>.
@@ -138,10 +138,20 @@ class Playlist(PySide6.QtCore.QAbstractListModel):
 		logging.info(f"Adding {path} to the playlist at index {index}.")
 		if os.path.isdir(path):
 			entries = os.listdir(path)
-			entries = [os.path.join(path, entry) for entry in entries]
+			entries = [os.path.join(path, entry) for entry in entries if not entry.endswith(".m3u")]
 			entries = kek.music_directory.sort_directory(entries)
 			for entry in entries:
 				self.add(entry, index)
+				index += 1
+		elif path.endswith(".m3u"):
+			for line in open(path, "r").readlines():
+				line = line.strip()
+				if line.startswith("#"):
+					continue  # Comment line.
+				if os.path.isabs(line):
+					self.add(line, index)
+				else:
+					self.add(os.path.join(os.path.dirname(path), line), index)
 				index += 1
 		else:
 			extension = os.path.splitext(path)[-1]

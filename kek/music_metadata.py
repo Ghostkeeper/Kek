@@ -199,41 +199,57 @@ def add_file(path: str) -> None:
 		"image/png": ".png",
 		"image/gif": ".gif",
 	}
-	try:
-		f = mutagen.File(path)
-		duration = f.info.length
-		if type(f) in {mutagen.mp3.MP3, mutagen.wave.WAVE}:  # Uses ID3 tags.
-			id3 = mutagen.easyid3.EasyID3(path)
-			title = id3.get("title", [""])[0]
-			artist = id3.get("artist", [""])[0]
-			album = id3.get("album", [""])[0]
-			apic_keys = list(filter(lambda t: t.startswith("APIC:"), f.keys()))
-			apics = list(filter(lambda a: len(a.data) > 0, [f[key] for key in apic_keys]))
-			if len(apics) > 0:
-				mime = apics[0].mime
-				if mime in mime_to_extension:
-					extension = mime_to_extension[mime]
+	if path.endswith(".m3u"):
+		total_duration = 0
+		for line in open(path, "r"):
+			line = line.strip()
+			if line.startswith("#"):
+				continue  # Comment line.
+			if os.path.isabs(line):
+				abspath = line
+			else:
+				abspath = os.path.join(os.path.dirname(path), line)
+			try:
+				total_duration += mutagen.File(abspath).info.length
+			except Exception as e:
+				logging.warning(f"{type(e)}: Unable to get duration from {path}: {e}")
+			duration = total_duration
+	else:
+		try:
+			f = mutagen.File(path)
+			duration = f.info.length
+			if type(f) in {mutagen.mp3.MP3, mutagen.wave.WAVE}:  # Uses ID3 tags.
+				id3 = mutagen.easyid3.EasyID3(path)
+				title = id3.get("title", [""])[0]
+				artist = id3.get("artist", [""])[0]
+				album = id3.get("album", [""])[0]
+				apic_keys = list(filter(lambda t: t.startswith("APIC:"), f.keys()))
+				apics = list(filter(lambda a: len(a.data) > 0, [f[key] for key in apic_keys]))
+				if len(apics) > 0:
+					mime = apics[0].mime
+					if mime in mime_to_extension:
+						extension = mime_to_extension[mime]
+						cover_fname = os.path.join(kek.storage.cache(), "covers", str(uuid.uuid4()) + extension)
+						with open(cover_fname, "wb") as cover_fstream:
+							cover_fstream.write(apics[0].data)
+							cover = cover_fname
+			elif type(f) == mutagen.flac.FLAC:
+				title = f.get("title", [""])[0]
+				artist = f.get("artist", [""])[0]
+				album = f.get("album", [""])[0]
+				if len(f.pictures) > 0:
+					extension = mime_to_extension[f.pictures[0].mime]
 					cover_fname = os.path.join(kek.storage.cache(), "covers", str(uuid.uuid4()) + extension)
 					with open(cover_fname, "wb") as cover_fstream:
-						cover_fstream.write(apics[0].data)
+						cover_fstream.write(f.pictures[0].data)
 						cover = cover_fname
-		elif type(f) == mutagen.flac.FLAC:
-			title = f.get("title", [""])[0]
-			artist = f.get("artist", [""])[0]
-			album = f.get("album", [""])[0]
-			if len(f.pictures) > 0:
-				extension = mime_to_extension[f.pictures[0].mime]
-				cover_fname = os.path.join(kek.storage.cache(), "covers", str(uuid.uuid4()) + extension)
-				with open(cover_fname, "wb") as cover_fstream:
-					cover_fstream.write(f.pictures[0].data)
-					cover = cover_fname
-		elif isinstance(f, mutagen.ogg.OggFileType):  # Vorbis Comment
-			title = f.get("title", [os.path.splitext(os.path.basename(path))[0]])[0]
-			artist = f.get("artist", [""])[0]
-			album = f.get("album", [""])[0]
-			# TODO: Don't know yet how to get album covers from these and have no files to test with.
-	except Exception as e:
-		logging.warning(f"{type(e)}: Unable to get metadata from {path}: {e}")
+			elif isinstance(f, mutagen.ogg.OggFileType):  # Vorbis Comment
+				title = f.get("title", [os.path.splitext(os.path.basename(path))[0]])[0]
+				artist = f.get("artist", [""])[0]
+				album = f.get("album", [""])[0]
+				# TODO: Don't know yet how to get album covers from these and have no files to test with.
+		except Exception as e:
+			logging.warning(f"{type(e)}: Unable to get metadata from {path}: {e}")
 	if title == "":
 		title = os.path.splitext(os.path.basename(path))[0]
 	# We tend to store the album cover as a separate file in the same directory.
@@ -266,7 +282,7 @@ def is_music_file(path: str) -> bool:
 		return False  # Only read files.
 	ext = os.path.splitext(path)[1]
 	ext = ext.lower()
-	return ext in [".mp3", ".flac", ".ogg", ".opus", ".wav"]  # Supported file formats.
+	return ext in [".mp3", ".flac", ".ogg", ".opus", ".wav", ".m3u"]  # Supported file formats.
 
 
 def add_directory(path: str) -> None:
