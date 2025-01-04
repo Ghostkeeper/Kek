@@ -62,7 +62,7 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		Start playing a certain video.
 		:param path: The path to the video to play.
 		"""
-		self.vlc = vlc.MediaPlayer(path)
+		self.vlc = vlc.MediaPlayer("file://" + path)
 		self.vlc.play()
 
 	is_paused_changed = PySide6.QtCore.Signal()
