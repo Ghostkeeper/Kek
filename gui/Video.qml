@@ -338,9 +338,16 @@ Item {
 		Row {
 			anchors.centerIn: parent
 
+			spacing: 50
+
 			Gui.Button {
 				source: Kek.VideoPlayer.is_paused ? "graphics/play.svg" : "graphics/pause.svg"
 				onClicked: Kek.VideoPlayer.is_paused = !Kek.VideoPlayer.is_paused;
+			}
+
+			Gui.Button {
+				source: "graphics/stop.svg"
+				onClicked: Kek.VideoPlayer.stop()
 			}
 		}
 	}

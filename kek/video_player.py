@@ -69,6 +69,16 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		self.vlc.play()
 		self.is_playing_changed.emit()
 
+	@PySide6.QtCore.Slot()
+	def stop(self) -> None:
+		"""
+		Stop playing any video.
+		"""
+		if self.vlc is not None:
+			self.vlc.stop()
+		self.vlc = None
+		self.is_playing_changed.emit()
+
 	is_paused_changed = PySide6.QtCore.Signal()
 
 	def is_paused_set(self, new_is_paused: bool) -> None:
