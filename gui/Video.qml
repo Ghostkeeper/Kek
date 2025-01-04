@@ -9,317 +9,330 @@ import QtQuick.Controls
 import Kek 1.0 as Kek
 import "." as Gui
 
-Row {
+Item {
 	anchors.fill: parent
 
-	spacing: 20
+	Row {
+		anchors.fill: parent
 
-	Column { //Documentaries column.
-		width: (parent.width - 40) / 3
-		height: parent.height
+		spacing: 20
 
-		Image {
-			anchors.horizontalCenter: parent.horizontalCenter
-
-			source: "graphics/documentaries.jpg"
+		Column { //Documentaries column.
+			width: (parent.width - 40) / 3
+			height: parent.height
 
 			Image {
-				id: documentaries_header
-				anchors {
-					left: parent.left
-					right: parent.right
-					bottom: parent.bottom
-				}
-				height: 200
+				anchors.horizontalCenter: parent.horizontalCenter
 
-				source: "graphics/fade_black.svg"
+				source: "graphics/documentaries.jpg"
+
+				Image {
+					id: documentaries_header
+					anchors {
+						left: parent.left
+						right: parent.right
+						bottom: parent.bottom
+					}
+					height: 200
+
+					source: "graphics/fade_black.svg"
+				}
+			}
+
+			ListView {
+				id: documentaries_table
+				width: parent.width
+				height: parent.height - documentaries_header.height - parent.spacing
+
+				flickableDirection: Flickable.VerticalFlick
+				model: Kek.VideoDirectory {
+					id: documentaries_directory
+					default_directory: "Documentaires"
+				}
+				delegate: MouseArea {
+					width: parent ? parent.width : 0
+					height: 50
+
+					onClicked: {
+						if(model.type === "directory") {
+							documentaries_directory.directory = model.path;
+						} else {
+							print("TODO: Play video: " + model.path);
+						}
+					}
+
+					Image {
+						id: type_icon
+						width: 50
+						height: 50
+						source: {
+							if(model.type === "directory") return "graphics/directory.svg";
+							if(model.type === "film") return "graphics/video.svg";
+							return "";
+						}
+					}
+
+					Text {
+						anchors {
+							left: type_icon.right
+							right: year.right
+							top: parent.top
+							bottom: parent.bottom
+						}
+
+						text: model.title
+						elide: Text.ElideRight
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+					Text {
+						id: year
+						anchors {
+							right: rating.left
+							top: parent.top
+							bottom: parent.bottom
+						}
+						width: 100
+
+						text: model.year ? "" + model.year : ""
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+					Text {
+						id: rating
+						anchors {
+							right: parent.right
+							top: parent.top
+							bottom: parent.bottom
+						}
+						width: 50
+
+						text: model.rating ? "" + model.rating : ""
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+				}
+
+				ScrollBar.vertical: Gui.ScrollBar {}
 			}
 		}
 
-		ListView {
-			id: documentaries_table
-			width: parent.width
-			height: parent.height - documentaries_header.height - parent.spacing
+		Column { //Films column.
+			width: (parent.width - 40) / 3
+			height: parent.height
 
-			flickableDirection: Flickable.VerticalFlick
-			model: Kek.VideoDirectory {
-				id: documentaries_directory
-				default_directory: "Documentaires"
-			}
-			delegate: MouseArea {
-				width: parent ? parent.width : 0
-				height: 50
+			Image {
+				id: films_header
+				anchors.horizontalCenter: parent.horizontalCenter
 
-				onClicked: {
-					if(model.type === "directory") {
-						documentaries_directory.directory = model.path;
-					} else {
-						print("TODO: Play video: " + model.path);
-					}
-				}
+				source: "graphics/films.jpg"
 
 				Image {
-					id: type_icon
-					width: 50
-					height: 50
-					source: {
-						if(model.type === "directory") return "graphics/directory.svg";
-						if(model.type === "film") return "graphics/video.svg";
-						return "";
-					}
-				}
-
-				Text {
 					anchors {
-						left: type_icon.right
-						right: year.right
-						top: parent.top
-						bottom: parent.bottom
-					}
-
-					text: model.title
-					elide: Text.ElideRight
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
-				}
-				Text {
-					id: year
-					anchors {
-						right: rating.left
-						top: parent.top
-						bottom: parent.bottom
-					}
-					width: 100
-
-					text: model.year ? "" + model.year : ""
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
-				}
-				Text {
-					id: rating
-					anchors {
+						left: parent.left
 						right: parent.right
-						top: parent.top
 						bottom: parent.bottom
 					}
-					width: 50
+					height: 200
 
-					text: model.rating ? "" + model.rating : ""
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
+					source: "graphics/fade_black.svg"
 				}
 			}
 
-			ScrollBar.vertical: Gui.ScrollBar {}
+			ListView {
+				id: films_table
+				width: parent.width
+				height: parent.height - films_header.height - parent.spacing
+
+				flickableDirection: Flickable.VerticalFlick
+				model: Kek.VideoDirectory {
+					id: films_directory
+					default_directory: "Films"
+				}
+				delegate: MouseArea {
+					width: parent ? parent.width : 0
+					height: 50
+
+					onClicked: {
+						if(model.type === "directory") {
+							films_directory.directory = model.path;
+						} else {
+							Kek.VideoPlayer.play(model.path);
+						}
+					}
+
+					Image {
+						id: type_icon
+						width: 50
+						height: 50
+						source: {
+							if(model.type === "directory") return "graphics/directory.svg";
+							if(model.type === "film") return "graphics/video.svg";
+							return "";
+						}
+					}
+
+					Text {
+						anchors {
+							left: type_icon.right
+							right: year.right
+							top: parent.top
+							bottom: parent.bottom
+						}
+
+						text: model.title
+						elide: Text.ElideRight
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+					Text {
+						id: year
+						anchors {
+							right: rating.left
+							top: parent.top
+							bottom: parent.bottom
+						}
+						width: 100
+
+						text: model.year ? "" + model.year : ""
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+					Text {
+						id: rating
+						anchors {
+							right: parent.right
+							top: parent.top
+							bottom: parent.bottom
+						}
+						width: 50
+
+						text: model.rating ? "" + model.rating : ""
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+				}
+
+				ScrollBar.vertical: Gui.ScrollBar {}
+			}
+		}
+
+		Column { //Series column.
+			width: (parent.width - 40) / 3
+			height: parent.height
+
+			Image {
+				anchors.horizontalCenter: parent.horizontalCenter
+
+				source: "graphics/series.jpg"
+
+				Image {
+					id: series_header
+					anchors {
+						left: parent.left
+						right: parent.right
+						bottom: parent.bottom
+					}
+					height: 200
+
+					source: "graphics/fade_black.svg"
+				}
+			}
+
+			ListView {
+				id: series_table
+				width: parent.width
+				height: parent.height - series_header.height - parent.spacing
+
+				flickableDirection: Flickable.VerticalFlick
+				model: Kek.VideoDirectory {
+					id: series_directory
+					default_directory: "Series"
+				}
+				delegate: MouseArea {
+					width: parent ? parent.width : 0
+					height: 50
+
+					onClicked: {
+						if(model.type === "directory") {
+							series_directory.directory = model.path;
+						} else {
+							print("TODO: Play video: " + model.path);
+						}
+					}
+
+					Image {
+						id: type_icon
+						width: 50
+						height: 50
+						source: {
+							if(model.type === "directory") return "graphics/directory.svg";
+							if(model.type === "film") return "graphics/video.svg";
+							return "";
+						}
+					}
+
+					Text {
+						anchors {
+							left: type_icon.right
+							right: year.right
+							top: parent.top
+							bottom: parent.bottom
+						}
+
+						text: model.title
+						elide: Text.ElideRight
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+					Text {
+						id: year
+						anchors {
+							right: rating.left
+							top: parent.top
+							bottom: parent.bottom
+						}
+						width: 100
+
+						text: model.year ? "" + model.year : ""
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+					Text {
+						id: rating
+						anchors {
+							right: parent.right
+							top: parent.top
+							bottom: parent.bottom
+						}
+						width: 50
+
+						text: model.rating ? "" + model.rating : ""
+						verticalAlignment: Text.AlignVCenter
+						color: "white"
+						font.pointSize: 30
+					}
+				}
+
+				ScrollBar.vertical: Gui.ScrollBar {}
+			}
 		}
 	}
 
-	Column { //Films column.
-		width: (parent.width - 40) / 3
-		height: parent.height
+	//Player overlay on top of the headers.
+	Rectangle {
+		width: parent.width
+		height: films_header.height
 
-		Image {
-			id: films_header
-			anchors.horizontalCenter: parent.horizontalCenter
-
-			source: "graphics/films.jpg"
-
-			Image {
-				anchors {
-					left: parent.left
-					right: parent.right
-					bottom: parent.bottom
-				}
-				height: 200
-
-				source: "graphics/fade_black.svg"
-			}
-		}
-
-		ListView {
-			id: films_table
-			width: parent.width
-			height: parent.height - films_header.height - parent.spacing
-
-			flickableDirection: Flickable.VerticalFlick
-			model: Kek.VideoDirectory {
-				id: films_directory
-				default_directory: "Films"
-			}
-			delegate: MouseArea {
-				width: parent ? parent.width : 0
-				height: 50
-
-				onClicked: {
-					if(model.type === "directory") {
-						films_directory.directory = model.path;
-					} else {
-						print("TODO: Play video: " + model.path);
-					}
-				}
-
-				Image {
-					id: type_icon
-					width: 50
-					height: 50
-					source: {
-						if(model.type === "directory") return "graphics/directory.svg";
-						if(model.type === "film") return "graphics/video.svg";
-						return "";
-					}
-				}
-
-				Text {
-					anchors {
-						left: type_icon.right
-						right: year.right
-						top: parent.top
-						bottom: parent.bottom
-					}
-
-					text: model.title
-					elide: Text.ElideRight
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
-				}
-				Text {
-					id: year
-					anchors {
-						right: rating.left
-						top: parent.top
-						bottom: parent.bottom
-					}
-					width: 100
-
-					text: model.year ? "" + model.year : ""
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
-				}
-				Text {
-					id: rating
-					anchors {
-						right: parent.right
-						top: parent.top
-						bottom: parent.bottom
-					}
-					width: 50
-
-					text: model.rating ? "" + model.rating : ""
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
-				}
-			}
-
-			ScrollBar.vertical: Gui.ScrollBar {}
-		}
-	}
-
-	Column { //Series column.
-		width: (parent.width - 40) / 3
-		height: parent.height
-
-		Image {
-			anchors.horizontalCenter: parent.horizontalCenter
-
-			source: "graphics/series.jpg"
-
-			Image {
-				id: series_header
-				anchors {
-					left: parent.left
-					right: parent.right
-					bottom: parent.bottom
-				}
-				height: 200
-
-				source: "graphics/fade_black.svg"
-			}
-		}
-
-		ListView {
-			id: series_table
-			width: parent.width
-			height: parent.height - series_header.height - parent.spacing
-
-			flickableDirection: Flickable.VerticalFlick
-			model: Kek.VideoDirectory {
-				id: series_directory
-				default_directory: "Series"
-			}
-			delegate: MouseArea {
-				width: parent ? parent.width : 0
-				height: 50
-
-				onClicked: {
-					if(model.type === "directory") {
-						series_directory.directory = model.path;
-					} else {
-						print("TODO: Play video: " + model.path);
-					}
-				}
-
-				Image {
-					id: type_icon
-					width: 50
-					height: 50
-					source: {
-						if(model.type === "directory") return "graphics/directory.svg";
-						if(model.type === "film") return "graphics/video.svg";
-						return "";
-					}
-				}
-
-				Text {
-					anchors {
-						left: type_icon.right
-						right: year.right
-						top: parent.top
-						bottom: parent.bottom
-					}
-
-					text: model.title
-					elide: Text.ElideRight
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
-				}
-				Text {
-					id: year
-					anchors {
-						right: rating.left
-						top: parent.top
-						bottom: parent.bottom
-					}
-					width: 100
-
-					text: model.year ? "" + model.year : ""
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
-				}
-				Text {
-					id: rating
-					anchors {
-						right: parent.right
-						top: parent.top
-						bottom: parent.bottom
-					}
-					width: 50
-
-					text: model.rating ? "" + model.rating : ""
-					verticalAlignment: Text.AlignVCenter
-					color: "white"
-					font.pointSize: 30
-				}
-			}
-
-			ScrollBar.vertical: Gui.ScrollBar {}
-		}
+		visible: Kek.VideoPlayer.is_playing
+		color: "black"
 	}
 }

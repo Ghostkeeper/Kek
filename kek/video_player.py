@@ -57,6 +57,7 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		"""
 		return self.vlc is not None
 
+	@PySide6.QtCore.Slot(str)
 	def play(self, path: str) -> None:
 		"""
 		Start playing a certain video.
@@ -64,6 +65,7 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		"""
 		self.vlc = vlc.MediaPlayer("file://" + path)
 		self.vlc.play()
+		self.is_playing_changed.emit()
 
 	is_paused_changed = PySide6.QtCore.Signal()
 
