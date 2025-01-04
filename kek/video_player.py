@@ -1,5 +1,5 @@
 # Desktop environment for a domotics hub.
-# Copyright (C) 2024 Ghostkeeper
+# Copyright (C) 2025 Ghostkeeper
 # This application is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 # This application is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for details.
 # You should have received a copy of the GNU Affero General Public License along with this application. If not, see <https://gnu.org/licenses/>.
@@ -42,7 +42,7 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		"""
 		super().__init__(parent)
 		self.vlc = None  # If any video is playing, a VLC instance that is playing it.
-		self.is_paused = False  # Whether the video is paused (if playing).
+		self._is_paused = False  # Whether the video is paused (if playing).
 
 	is_playing_changed = PySide6.QtCore.Signal()
 
@@ -76,8 +76,18 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		Pause or continue the video.
 		:param new_is_paused: Whether the music should be paused or running.
 		"""
-		if self.is_paused == new_is_paused:
+		if self._is_paused == new_is_paused:
 			return
-		logging.info(f"Toggling pause to: {new_is_paused}")
-		# TODO: toggle pause
+		if self.vlc is None:  # No video? Shouldn't happen.
+			return
+		self.vlc.set_pause(new_is_paused)
+		self._is_paused = new_is_paused
 		self.is_paused_changed.emit()
+
+	@PySide6.QtCore.Property(bool, notify=is_paused_changed, fset=is_paused_set)
+	def is_paused(self) -> bool:
+		"""
+		Get whether the currently playing video is currently paused.
+		:return: ``True`` if the video is paused, or ``False`` if it is playing.
+		"""
+		return self._is_paused
