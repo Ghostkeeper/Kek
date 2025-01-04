@@ -57,7 +57,7 @@ Item {
 						if(model.type === "directory") {
 							documentaries_directory.directory = model.path;
 						} else {
-							print("TODO: Play video: " + model.path);
+							Kek.VideoPlayer.play(model.path);
 						}
 					}
 
@@ -263,7 +263,7 @@ Item {
 						if(model.type === "directory") {
 							series_directory.directory = model.path;
 						} else {
-							print("TODO: Play video: " + model.path);
+							Kek.VideoPlayer.play(model.path);
 						}
 					}
 
