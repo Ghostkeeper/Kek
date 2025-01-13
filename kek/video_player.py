@@ -8,8 +8,8 @@
 Keeps track and controls the currently playing video.
 """
 
-import logging
 import PySide6.QtCore  # For exposing these controls to QML.
+import time  # To wait for VLC to start up.
 import typing
 import vlc  # To play video files.
 
@@ -67,6 +67,8 @@ class VideoPlayer(PySide6.QtCore.QObject):
 			self.vlc.stop()
 		self.vlc = vlc.MediaPlayer("file://" + path)
 		self.vlc.play()
+		while not self.vlc.is_playing():
+			time.sleep(0.1)
 		self.is_playing_changed.emit()
 
 	@PySide6.QtCore.Slot()
@@ -101,3 +103,15 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		:return: ``True`` if the video is paused, or ``False`` if it is playing.
 		"""
 		return self._is_paused
+
+	@PySide6.QtCore.Property(float, notify=is_playing_changed)
+	def current_duration(self) -> float:
+		"""
+		Get the length of the currently playing video, if any.
+
+		If no video is playing, this will return 0. Best not use that value then.
+		:return: The duration of the currently playing video, if any.
+		"""
+		if self.vlc is None:
+			return 0
+		return self.vlc.get_length()
