@@ -130,4 +130,41 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		"""
 		if self.vlc is None:
 			return 0
-		return self.vlc.get_length()
+		return self.vlc.get_length() / 1000
+
+	@PySide6.QtCore.Slot(result=str)
+	def current_playtime(self) -> str:
+		"""
+		Read the current time since the video started playing.
+
+		The duration gets formatted for display.
+
+		This does not have an automatic update mechanism since it continuously updates.
+		:return: The position in the current video where we are playing.
+		"""
+		if self.vlc is None:
+			return ""
+		seconds = round(self.vlc.get_position() * self.vlc.get_length() / 1000)
+		return str(math.floor(seconds / 60)) + ":" + ("0" if (seconds % 60 < 10) else "") + str(seconds % 60)
+
+	@PySide6.QtCore.Slot(result=float)
+	def current_playtime_float(self) -> float:
+		"""
+		Read the current time since the video started playing, in seconds as a float.
+
+		This version does not format it. It returns a number for use of seeking.
+		:return: The position in the current video where we are playing.
+		"""
+		if self.vlc is None:
+			return 0
+		return self.vlc.get_position() * self.vlc.get_length() / 1000
+
+	@PySide6.QtCore.Slot(float)
+	def seek(self, fraction: float) -> None:
+		"""
+		Change the current position in the song.
+		:param fraction: A number between 0 and 1, determining where to seek to.
+		"""
+		if self.vlc is None:
+			return
+		self.vlc.set_position(fraction)

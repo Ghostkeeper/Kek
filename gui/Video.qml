@@ -329,25 +329,91 @@ Item {
 
 	//Player overlay on top of the headers.
 	Rectangle {
+		id: player
 		width: parent.width
 		height: films_header.height
 
 		visible: Kek.VideoPlayer.is_playing
 		color: "black"
 
-		Row {
-			anchors.centerIn: parent
-
+		Column {
+			anchors.fill: parent
 			spacing: 50
 
-			Gui.Button {
-				source: Kek.VideoPlayer.is_paused ? "graphics/play.svg" : "graphics/pause.svg"
-				onClicked: Kek.VideoPlayer.is_paused = !Kek.VideoPlayer.is_paused;
+			Row {
+				anchors.horizontalCenter: parent.horizontalCenter
+
+				spacing: 50
+
+				Gui.Button {
+					source: Kek.VideoPlayer.is_paused ? "graphics/play.svg" : "graphics/pause.svg"
+					onClicked: Kek.VideoPlayer.is_paused = !Kek.VideoPlayer.is_paused;
+				}
+
+				Gui.Button {
+					source: "graphics/stop.svg"
+					onClicked: Kek.VideoPlayer.stop()
+				}
 			}
 
-			Gui.Button {
-				source: "graphics/stop.svg"
-				onClicked: Kek.VideoPlayer.stop()
+			Item {
+				anchors.horizontalCenter: parent.horizontalCenter
+				width: parent.width * 2 / 3
+				height: 50
+
+				Timer { //Refresh timer for the playtime text and progress bar width.
+					interval: 100 //10fps
+					running: player.visible
+					repeat: true
+					onTriggered: {
+						current_playtime.text = Kek.VideoPlayer.current_playtime();
+						progress_bar.width = Kek.VideoPlayer.current_playtime_float() / Kek.VideoPlayer.current_duration_float * progress_bar_background.width;
+					}
+				}
+
+				Text {
+					id: current_playtime
+					width: 150
+					height: parent.height
+
+					text: ""
+					elide: Text.ElideRight
+					verticalAlignment: Text.AlignVCenter
+					color: "white"
+					font.pointSize: 30
+				}
+				Text { //Total duration.
+					id: total_duration
+					anchors.right: parent.right
+					width: 150
+					height: parent.height
+
+					text: Kek.VideoPlayer.current_duration
+					elide: Text.ElideRight
+					horizontalAlignment: Text.AlignRight
+					verticalAlignment: Text.AlignVCenter
+					color: "white"
+					font.pointSize: 30
+				}
+				MouseArea {
+					id: progress_bar_background
+					anchors {
+						left: current_playtime.right
+						right: total_duration.left
+						top: parent.top
+						bottom: parent.bottom
+					}
+
+					onClicked: Kek.VideoPlayer.seek(mouseX / width);
+
+					Rectangle {
+						id: progress_bar
+						height: parent.height
+						width: Kek.VideoPlayer.current_playtime_float() / Kek.VideoPlayer.current_duration_float * progress_bar_background.width
+
+						color: "#007FFF"
+					}
+				}
 			}
 		}
 	}
