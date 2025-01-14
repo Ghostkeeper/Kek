@@ -136,14 +136,27 @@ class MusicPlayer(PySide6.QtCore.QObject):
 		self.is_playing_changed.emit()
 		self.song_end_timer.stop()
 
+	@PySide6.QtCore.Slot()
 	def play_next(self) -> None:
 		"""
 		Advance the current track and play the next track.
 		"""
-		logging.info(f"Continuing with the next track.")
+		logging.info("Continuing with the next track.")
 		self.stop()
 		playlist = kek.playlist.Playlist.get_instance().music
 		self.current_track = (self.current_track + 1) % len(playlist)
+		self.current_track_changed.emit()
+		self.play()
+
+	@PySide6.QtCore.Slot()
+	def play_previous(self) -> None:
+		"""
+		Rewind to the previous track and play the previous track.
+		"""
+		logging.info("Rewinding to the previous track.")
+		self.stop()
+		playlist = kek.playlist.Playlist.get_instance().music
+		self.current_track = (self.current_track - 1 + len(playlist)) % len(playlist)
 		self.current_track_changed.emit()
 		self.play()
 

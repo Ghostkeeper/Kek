@@ -254,8 +254,12 @@ Item {
 		Row {
 			anchors.horizontalCenter: parent.horizontalCenter
 
-			spacing: 50
+			spacing: 20
 
+			Gui.Button {
+				source: "graphics/previous.svg"
+				onClicked: Kek.MusicPlayer.play_previous()
+			}
 			Gui.Button {
 				source: (Kek.MusicPlayer.is_playing && !Kek.MusicPlayer.is_paused) ? "graphics/pause.svg" : "graphics/play.svg";
 				onClicked: {
@@ -269,6 +273,10 @@ Item {
 			Gui.Button {
 				source: "graphics/stop.svg"
 				onClicked: Kek.MusicPlayer.is_playing = false;
+			}
+			Gui.Button {
+				source: "graphics/next.svg"
+				onClicked: Kek.MusicPlayer.play_next()
 			}
 		}
 
