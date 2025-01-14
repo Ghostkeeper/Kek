@@ -67,6 +67,7 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		if self.vlc is not None:
 			self.vlc.stop()
 		self.vlc = vlc.MediaPlayer("file://" + path)
+		self.vlc.set_fullscreen(True)
 		self.vlc.play()
 		while not self.vlc.is_playing():
 			time.sleep(0.1)
