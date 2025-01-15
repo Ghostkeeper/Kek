@@ -45,6 +45,10 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		self.vlc = None  # If any video is playing, a VLC instance that is playing it.
 		self._is_paused = False  # Whether the video is paused (if playing).
 
+		self.video_end_timer = PySide6.QtCore.QTimer()
+		self.video_end_timer.setSingleShot(True)
+		self.video_end_timer.timeout.connect(self.stop)
+
 	is_playing_changed = PySide6.QtCore.Signal()
 
 	@PySide6.QtCore.Property(bool, notify=is_playing_changed)
@@ -71,6 +75,8 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		self.vlc.play()
 		while not self.vlc.is_playing():
 			time.sleep(0.1)
+		self.video_end_timer.setInterval(self.current_duration_float * 1000)
+		self.video_end_timer.start()
 		self.is_playing_changed.emit()
 
 	@PySide6.QtCore.Slot()
@@ -81,6 +87,7 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		if self.vlc is not None:
 			self.vlc.stop()
 		self.vlc = None
+		self.video_end_timer.stop()
 		self.is_playing_changed.emit()
 
 	is_paused_changed = PySide6.QtCore.Signal()
@@ -94,6 +101,11 @@ class VideoPlayer(PySide6.QtCore.QObject):
 			return
 		if self.vlc is None:  # No video? Shouldn't happen.
 			return
+		if new_is_paused:
+			self.video_end_timer.stop()
+		else:
+			self.video_end_timer.setInterval((self.current_duration_float - self.current_playtime_float()) * 1000)
+			self.video_end_timer.start()
 		self.vlc.set_pause(new_is_paused)
 		self._is_paused = new_is_paused
 		self.is_paused_changed.emit()
@@ -169,3 +181,7 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		if self.vlc is None:
 			return
 		self.vlc.set_position(fraction)
+		if not self.is_paused:
+			self.video_end_timer.stop()
+			self.video_end_timer.setInterval((self.current_duration_float - self.current_playtime_float()) * 1000)
+			self.video_end_timer.start()
