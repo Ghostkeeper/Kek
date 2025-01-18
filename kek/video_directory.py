@@ -145,7 +145,7 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 			entry_dict = {"path": entry}
 			if os.path.isdir(entry):
 				entry_dict["type"] = "directory"
-			elif os.path.splitext(entry)[1] in [".mkv", ".mp4", ".avi", ".m2ts", ".divx"]:
+			elif os.path.splitext(entry)[1] in [".mkv", ".mp4", ".avi", ".m2ts", ".divx", ".webm", ".wmv"]:
 				entry_dict["type"] = "film"
 			else:
 				continue  # Unsupported / unknown file type.
