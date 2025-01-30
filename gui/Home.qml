@@ -48,12 +48,12 @@ Item {
 	}
 
 	//Circle of 6 hexagons surrounding the centre.
-	Gui.Button {
+	Gui.HexagonButton {
 		x: parent.width / 2 + 400.981 - width / 2 //cos(30) * (cos(30)*250*2 + 30) = 400.981
 		y: parent.height / 2 + 231.506 - height / 2 //sin(30) * (cos(30)*250*2 + 30) = 231.506
 
 		source: "graphics/tile_music.svg"
-		onClicked: {
+		onClickedHandler: function click() {
 			pulse.centre = Qt.point(x + width / 2, y + height / 2);
 			pulse.animationFinished = function() {
 				pageSwapper.source = "Music.qml";
@@ -61,12 +61,12 @@ Item {
 			timeAnimation.restart();
 		}
 	}
-	Gui.Button {
+	Gui.HexagonButton {
 		x: parent.width / 2 - width / 2
 		y: parent.height / 2 + 463.013 - height / 2 //cos(30)*250*2 + 30 = 463.013
 
 		source: "graphics/tile_video.svg"
-		onClicked: {
+		onClickedHandler: function click() {
 			pulse.centre = Qt.point(x + width / 2, y + height / 2);
 			pulse.animationFinished = function() {
 				pageSwapper.source = "Video.qml";
