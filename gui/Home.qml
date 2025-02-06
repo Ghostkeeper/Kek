@@ -7,6 +7,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtMultimedia
+import Kek 1.0 as Kek
 import "." as Gui
 
 Item {
@@ -74,11 +75,18 @@ Item {
 			timeAnimation.restart();
 		}
 	}
-	Image {
+	Gui.HexagonButton {
 		x: parent.width / 2 - 400.981 - width / 2
 		y: parent.height / 2 + 231.506 - height / 2
 
-		source: "graphics/hexagon.svg"
+		source: "graphics/tile_map.svg"
+		onClickedHandler: function click() {
+			pulse.centre = Qt.point(x + width / 2, y + height / 2);
+			pulse.animationFinished = function() {
+				Kek.Map.show()
+			}
+			timeAnimation.restart();
+		}
 	}
 	Image {
 		x: parent.width / 2 - 400.981 - width / 2

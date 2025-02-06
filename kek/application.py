@@ -13,6 +13,7 @@ import PySide6.QtQml  # To register types with the QML engine, and create the en
 import PySide6.QtWidgets  # This is an application.
 import typing
 
+import kek.map
 import kek.music_directory
 import kek.music_player
 import kek.playlist
@@ -47,6 +48,7 @@ class Application(PySide6.QtWidgets.QApplication):
 
 		logging.debug("Registering QML types.")
 		PySide6.QtQml.qmlRegisterSingletonInstance(Application, "Kek", 1, 0, "Application", self)
+		PySide6.QtQml.qmlRegisterSingletonInstance(kek.map.Map, "Kek", 1, 0, "Map", kek.map.Map.get_instance())
 		PySide6.QtQml.qmlRegisterSingletonInstance(kek.music_player.MusicPlayer, "Kek", 1, 0, "MusicPlayer", kek.music_player.MusicPlayer.get_instance())
 		PySide6.QtQml.qmlRegisterSingletonInstance(kek.playlist.Playlist, "Kek", 1, 0, "Playlist", kek.playlist.Playlist.get_instance())
 		PySide6.QtQml.qmlRegisterSingletonInstance(kek.video_player.VideoPlayer, "Kek", 1, 0, "VideoPlayer", kek.video_player.VideoPlayer.get_instance())
