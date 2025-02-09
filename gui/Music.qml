@@ -30,6 +30,7 @@ Item {
 			height: 50
 
 			drag.target: dragged
+			drag.axis: Drag.XAxis
 			property bool dragActive: drag.active //To be able to listen to drag.active changes.
 			property string filename: model.name ? model.name : ""
 
@@ -115,14 +116,7 @@ Item {
 
 		flickableDirection: Flickable.VerticalFlick
 		model: Kek.Playlist
-		delegate: Text {
-			text: model.title
-			color: "white"
-			font.pointSize: 30
-			width: parent ? parent.width : 0
-			height: 50
-		}
-		/*delegate: SwipeDelegate {
+		delegate: SwipeDelegate {
 			id: playlist_item
 			width: parent ? parent.width : 0
 			height: 50
@@ -174,7 +168,7 @@ Item {
 					value: false
 				}
 			}
-		}*/
+		}
 
 		ScrollBar.vertical: Gui.ScrollBar {}
 
