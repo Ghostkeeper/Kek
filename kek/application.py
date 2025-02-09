@@ -9,6 +9,7 @@ A module that provides the application class, which is a QtApplication object.
 """
 
 import logging
+import os.path  # To call on Git to update the source code automatically.
 import PySide6.QtQml  # To register types with the QML engine, and create the engine.
 import PySide6.QtWidgets  # This is an application.
 import subprocess  # To call on Git to update the source code automatically.
@@ -64,4 +65,5 @@ class Application(PySide6.QtWidgets.QApplication):
 		logging.info("Start-up complete.")
 
 		# Update my own source code.
-		subprocess.Popen(["git", "pull"], cwd="/home/mouse/Kek")
+		source_directory = os.path.dirname(__file__)
+		subprocess.Popen(["git", "pull"], cwd=source_directory)
