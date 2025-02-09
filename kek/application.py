@@ -11,6 +11,7 @@ A module that provides the application class, which is a QtApplication object.
 import logging
 import PySide6.QtQml  # To register types with the QML engine, and create the engine.
 import PySide6.QtWidgets  # This is an application.
+import subprocess  # To call on Git to update the source code automatically.
 import typing
 
 import kek.map
@@ -61,3 +62,6 @@ class Application(PySide6.QtWidgets.QApplication):
 		self.engine.load("gui/MainWindow.qml")
 
 		logging.info("Start-up complete.")
+
+		# Update my own source code.
+		subprocess.Popen(["git", "pull"], cwd="/home/mouse/Kek")
