@@ -31,6 +31,7 @@ Item {
 
 			drag.target: dragged
 			drag.axis: Drag.XAxis
+			drag.threshold: 20
 			property bool dragActive: drag.active //To be able to listen to drag.active changes.
 			property string filename: model.name ? model.name : ""
 
@@ -53,8 +54,10 @@ Item {
 					dragged.Drag.active = true;
 					dragged.Drag.hotSpot.x = mouseX;
 					dragged.Drag.hotSpot.y = mouseY;
+					drag.axis = Drag.XAndYAxis;
 				} else {
 					dragged.Drag.drop();
+					drag.axis = Drag.XAxis;
 				}
 			}
 
