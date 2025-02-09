@@ -115,7 +115,14 @@ Item {
 
 		flickableDirection: Flickable.VerticalFlick
 		model: Kek.Playlist
-		delegate: SwipeDelegate {
+		delegate: Text {
+			text: model.title
+			color: "white"
+			font.pointSize: 30
+			width: parent ? parent.width : 0
+			height: 50
+		}
+		/*delegate: SwipeDelegate {
 			id: playlist_item
 			width: parent ? parent.width : 0
 			height: 50
@@ -167,7 +174,7 @@ Item {
 					value: false
 				}
 			}
-		}
+		}*/
 
 		ScrollBar.vertical: Gui.ScrollBar {}
 
