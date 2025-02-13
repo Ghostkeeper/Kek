@@ -41,3 +41,11 @@ This application starts a Firefox process for certain parts of its operation. Fo
 * In about:config, change the `dom.allow_scripts_to_close_windows` setting to `true`. This is because we'll add a script to certain pages which adds a button to close the page (the browser), which lets the user go back to the main menu.
 * Install the Greasemonkey extension.
 * In Greasemonkey, add the contents of the `greasemonkey-map.js` script as a new user script, to modify openstreetmap.org to display the map in dark mode, removing some menus, and to add a button to return to the main menu.
+
+Film disk mounting
+----
+To access the films on my server, we need to add this line to `/etc/fstab`:
+
+```
+192.168.1.172:/backup/backups/Filmdisk /films nfs rw 0 0
+```

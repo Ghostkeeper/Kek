@@ -46,7 +46,7 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 		self.videos: list[dict[str, typing.Any]] = []  # The actual data contained in this table.
 		self._sort_by = "rating"
 
-		self.base_directory = "/run/user/1000/gvfs/sftp:host=192.168.1.172/backup/backups/Filmdisk/"
+		self.base_directory = "/films"
 		self._default_directory = "Films"
 		self._directory = ""
 		self.directory_set(self.base_directory + self._default_directory)
