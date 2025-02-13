@@ -1,5 +1,5 @@
 # Desktop environment for a domotics hub.
-# Copyright (C) 2024 Ghostkeeper
+# Copyright (C) 2025 Ghostkeeper
 # This application is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 # This application is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for details.
 # You should have received a copy of the GNU Affero General Public License along with this application. If not, see <https://gnu.org/licenses/>.
@@ -46,7 +46,7 @@ class VideoDirectory(PySide6.QtCore.QAbstractListModel):
 		self.videos: list[dict[str, typing.Any]] = []  # The actual data contained in this table.
 		self._sort_by = "rating"
 
-		self.base_directory = "/run/user/1000/gvfs/sftp:host=192.168.1.172,user=ruben/backup/backups/Filmdisk/"
+		self.base_directory = "/run/user/1000/gvfs/sftp:host=192.168.1.172/backup/backups/Filmdisk/"
 		self._default_directory = "Films"
 		self._directory = ""
 		self.directory_set(self.base_directory + self._default_directory)

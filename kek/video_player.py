@@ -10,9 +10,13 @@ Keeps track and controls the currently playing video.
 
 import math  # To format time durations.
 import PySide6.QtCore  # For exposing these controls to QML.
+import PySide6.QtQml  # To instantiate the VideoWindow component.
 import time  # To wait for VLC to start up.
 import typing
 import vlc  # To play video files.
+
+import kek.application
+
 
 class VideoPlayer(PySide6.QtCore.QObject):
 	"""
@@ -45,9 +49,25 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		self.vlc = None  # If any video is playing, a VLC instance that is playing it.
 		self._is_paused = False  # Whether the video is paused (if playing).
 
+		self.window_component = None
+		self.window = None
+
 		self.video_end_timer = PySide6.QtCore.QTimer()
 		self.video_end_timer.setSingleShot(True)
 		self.video_end_timer.timeout.connect(self.stop)
+
+	def get_window(self):
+		if self.window_component is None:  # Lazy load the component.
+			engine = kek.application.instance.engine
+			self.window_component = PySide6.QtQml.QQmlComponent(engine, PySide6.QtCore.QUrl.fromLocalFile("gui/VideoWindow.qml"))
+		if self.window is None:
+			self.window = self.window_component.create()
+			# Move the window to the second monitor.
+			first_screen_width = kek.application.instance.screens()[0].size().width()
+			print(first_screen_width)
+			self.window.setFramePosition(PySide6.QtCore.QPoint(first_screen_width, 0))
+			self.window.showFullScreen()
+		return self.window
 
 	is_playing_changed = PySide6.QtCore.Signal()
 
@@ -70,8 +90,11 @@ class VideoPlayer(PySide6.QtCore.QObject):
 		"""
 		if self.vlc is not None:
 			self.vlc.stop()
+
 		self.vlc = vlc.MediaPlayer("file://" + path)
-		self.vlc.set_fullscreen(True)
+		self.window = self.get_window()
+		self.vlc.set_xwindow(self.window.winId())
+		time.sleep(1)
 		self.vlc.play()
 		while not self.vlc.is_playing():
 			time.sleep(0.1)
