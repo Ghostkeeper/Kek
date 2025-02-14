@@ -1,5 +1,5 @@
 //Desktop environment for a domotics hub.
-//Copyright (C) 2024 Ghostkeeper
+//Copyright (C) 2025 Ghostkeeper
 //This application is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 //This application is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for details.
 //You should have received a copy of the GNU Affero General Public License along with this application. If not, see <https://gnu.org/licenses/>.
@@ -83,16 +83,23 @@ Item {
 		onClickedHandler: function click() {
 			pulse.centre = Qt.point(x + width / 2, y + height / 2);
 			pulse.animationFinished = function() {
-				Kek.Map.show()
+				Kek.Map.show();
 			}
 			timeAnimation.restart();
 		}
 	}
-	Image {
+	Gui.HexagonButton {
 		x: parent.width / 2 - 400.981 - width / 2
 		y: parent.height / 2 - 231.506 - height / 2
 
-		source: "graphics/hexagon.svg"
+		source: "graphics/tile_games.svg"
+		onClickedHandler: function click() {
+			pulse.centre = Qt.point(x + width / 2, y + height / 2);
+			pulse.animationFinished = function() {
+				pageSwapper.source = "Games.qml";
+			}
+			timeAnimation.restart();
+		}
 	}
 	Image {
 		x: parent.width / 2 - width / 2
