@@ -73,4 +73,5 @@ class Application(PySide6.QtWidgets.QApplication):
 
 		# Update my own source code.
 		source_directory = os.path.dirname(__file__)
-		subprocess.Popen(["git", "pull"], cwd=source_directory)
+		os.chdir(source_directory)
+		subprocess.Popen(["git", "pull"])
