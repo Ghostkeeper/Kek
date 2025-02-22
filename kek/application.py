@@ -10,6 +10,8 @@ A module that provides the application class, which is a QtApplication object.
 
 import logging
 import os.path  # To call on Git to update the source code automatically.
+import PySide6.QtCore  # To remove the cursor.
+import PySide6.QtGui  # To remove the cursor.
 import PySide6.QtQml  # To register types with the QML engine, and create the engine.
 import PySide6.QtWidgets  # This is an application.
 import subprocess  # To call on Git to update the source code automatically.
@@ -62,12 +64,12 @@ class Application(PySide6.QtWidgets.QApplication):
 		PySide6.QtQml.qmlRegisterSingletonInstance(kek.video_player.VideoPlayer, "Kek", 1, 0, "VideoPlayer", kek.video_player.VideoPlayer.get_instance())
 		PySide6.QtQml.qmlRegisterType(kek.video_directory.VideoDirectory, "Kek", 1, 0, "VideoDirectory")
 
-
 		logging.debug("Loading QML engine.")
 		self.engine = PySide6.QtQml.QQmlApplicationEngine()
 		self.engine.quit.connect(self.quit)
 		logging.debug("Creating main window.")
 		self.engine.load("gui/MainWindow.qml")
+		self.setOverrideCursor(PySide6.QtGui.QCursor(PySide6.QtCore.Qt.BlankCursor))
 
 		logging.info("Start-up complete.")
 
