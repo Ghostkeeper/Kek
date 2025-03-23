@@ -66,11 +66,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 
 		self.music: list[dict[str, typing.Any]] = []  # The actual data contained in this table.
 
-		music_locations = PySide6.QtCore.QStandardPaths.standardLocations(PySide6.QtCore.QStandardPaths.StandardLocation.MusicLocation)
-		if music_locations:
-			self.default_directory = music_locations[0]
-		else:
-			self.default_directory = os.path.expanduser("~/Music")
+		self.default_directory = "/music"
 		self._directory = ""
 		self.directory_set(self.default_directory)
 

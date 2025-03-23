@@ -42,10 +42,11 @@ This application starts a Firefox process for certain parts of its operation. Fo
 * Install the Greasemonkey extension.
 * In Greasemonkey, add the contents of the `greasemonkey-map.js` script as a new user script, to modify openstreetmap.org to display the map in dark mode, removing some menus, and to add a button to return to the main menu.
 
-Film disk mounting
+Film and music disk mounting
 ----
 To access the films on my server, we need to add this line to `/etc/fstab`:
 
 ```
 192.168.1.172:/backup/backups/Filmdisk /films nfs rw 0 0
+192.168.1.172:/backup/backups/Music /music nfs rw 0 0
 ```
