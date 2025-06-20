@@ -15,10 +15,8 @@ import PySide6.QtGui  # To remove the cursor.
 import PySide6.QtQml  # To register types with the QML engine, and create the engine.
 import PySide6.QtWidgets  # This is an application.
 import subprocess  # To call on Git to update the source code automatically.
-import threading  # To run background tasks.
 import typing
 
-import kek.directory_cache  # To start caching directories in the background.
 import kek.map  # Registering map Qt objects.
 import kek.music_directory  # Registering music Qt objects.
 import kek.music_player  # Registering music Qt objects.
@@ -74,10 +72,6 @@ class Application(PySide6.QtWidgets.QApplication):
 		self.setOverrideCursor(PySide6.QtGui.QCursor(PySide6.QtCore.Qt.BlankCursor))
 
 		logging.info("Start-up complete.")
-
-		# Start background scanning to cache directories.
-		thread = threading.Thread(target=kek.directory_cache.scan)
-		thread.start()
 
 		# Update my own source code.
 		source_directory = os.path.dirname(__file__)
