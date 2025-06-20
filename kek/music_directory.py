@@ -8,13 +8,16 @@
 Defines a Qt model that lists the music files in a directory.
 """
 
+import dirsync  # To sync music from the network in the background.
 import itertools  # To sort directories.
 import logging
 import math  # To format track duration.
 import mutagen  # To read metadata from music files.
+import os  # To find the music directory.
 import os.path  # To list files in the music directory.
 import PySide6.QtCore  # To expose this table to QML.
 import re  # To implement human sorting.
+import threading  # To sync music from the network in the background.
 import typing
 
 import kek.music_metadata  # To get the duration of files quickly.
@@ -66,9 +69,13 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 
 		self.music: list[dict[str, typing.Any]] = []  # The actual data contained in this table.
 
-		self.default_directory = "/music"
+		self.default_directory = os.getenv("XDG_MUSIC_DIR", default=os.path.expanduser("~/Music"))
 		self._directory = ""
 		self.directory_set(self.default_directory)
+
+		# In the background, synchronise from the cloud.
+		thread = threading.Thread(target=lambda: dirsync.sync("/music", self.default_directory, "sync", create=True, update=True, purge=True))
+		thread.start()
 
 
 	def rowCount(self, parent: typing.Optional[PySide6.QtCore.QModelIndex]=PySide6.QtCore.QModelIndex()) -> int:
