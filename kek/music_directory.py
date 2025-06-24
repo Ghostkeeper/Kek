@@ -74,6 +74,7 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 		self.directory_set(self.default_directory)
 
 		# In the background, synchronise from the cloud.
+		logging.info(f"Starting background sync from /music to {self.default_directory}")
 		thread = threading.Thread(target=lambda: dirsync.sync("/music", self.default_directory, "sync", create=True, update=True, purge=True))
 		thread.start()
 
