@@ -74,9 +74,12 @@ class MusicDirectory(PySide6.QtCore.QAbstractListModel):
 		self.directory_set(self.default_directory)
 
 		# In the background, synchronise from the cloud.
-		logging.info(f"Starting background sync from /music to {self.default_directory}")
-		thread = threading.Thread(target=lambda: dirsync.sync("/music", self.default_directory, "sync", create=True, update=True, purge=True))
-		thread.start()
+		if len(os.listdir("/music")) > 0:
+			logging.info(f"Starting background sync from /music to {self.default_directory}")
+			thread = threading.Thread(target=lambda: dirsync.sync("/music", self.default_directory, "sync", create=True, update=True, purge=True))
+			thread.start()
+		else:
+			logging.warning("Music disk is not properly mounted. Cannot sync!")
 
 
 	def rowCount(self, parent: typing.Optional[PySide6.QtCore.QModelIndex]=PySide6.QtCore.QModelIndex()) -> int:
